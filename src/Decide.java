@@ -46,9 +46,10 @@ public class Decide {
     *   with area greater than AREA1. (0 ≤ AREA1)
     *
     */
-    public boolean LIC3(){
+    public void LIC3(){
         if (NUMPOINTS < 3) {
-            return false;
+            CMV[3] = false;
+            return;
         }
 
         for (int n = 0 ; n < NUMPOINTS-2 ; n++) {
@@ -64,10 +65,11 @@ public class Decide {
             double area = Math.abs((x1*(y2-y3)+x2*(y3-y1)+x3*(y1-y2))/2);
 
             if (area > PARAMETERS.AREA1) {
-                return true;
+                CMV[3] = true;
+                return;
             }
         }
-        return false;
+        CMV[3] = false;
     }
 
 }   
