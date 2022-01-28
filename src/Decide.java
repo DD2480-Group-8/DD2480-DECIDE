@@ -10,7 +10,7 @@ public class Decide {
     Coordinate[] POINTS;
     CONNECTORS[][] LCM;
     boolean[][] PUM;
-    boolean[] CMV;
+    boolean[] CMV = new boolean[15];
     boolean[] PUV;
     boolean[] FUV;
     Parameters PARAMETERS;
@@ -26,6 +26,14 @@ public class Decide {
 
     public static void main(String[] args) {
 //        System.out.println("Hello World");
+    }
+
+    public void LIC0() {
+        for (int i = 1; i < NUMPOINTS; i++) {
+            if (Math.sqrt(Math.pow(POINTS[i].XPOS - POINTS[i-1].XPOS, 2) + Math.pow(POINTS[i].YPOS - POINTS[i-1].YPOS, 2)) > PARAMETERS.LENGTH1) {
+                CMV[0] = true;
+            }
+        }
     }
 
     public int simpleAddition(int x, int y) {
