@@ -38,7 +38,7 @@ public class Decide {
     *   with area greater than AREA1. (0 ≤ AREA1)
     *
     */
-    private boolean LIC3(){
+    public boolean LIC3(){
         if (NUMPOINTS < 3) {
             return false;
         }
