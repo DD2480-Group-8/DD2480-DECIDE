@@ -40,4 +40,44 @@ public class Decide {
         return x + y;
     }
 
+
+    /**
+     * LIC 10 is:
+     * There exists at least one set of three data points separated by exactly E_PTS and F_PTS consecutive
+     * intervening points, respectively, that are the vertices of a triangle with area greater than AREA1.
+     * The condition is not met when NUMPOINTS < 5.
+     * 1 ≤ E_PTS, 1 ≤ F_PTS E_PTS + F_PTS ≤ NUMPOINTS−3
+     */
+    public void LIC10() {
+        if (
+                (NUMPOINTS < 5)
+                || (1 > PARAMETERS.E_PTS)
+                || (1 > PARAMETERS.F_PTS)
+                || (PARAMETERS.E_PTS + PARAMETERS.E_PTS > NUMPOINTS-3)
+        ) {
+            CMV[10] = false;
+            return;
+        }
+
+        for (int n = 0 ; n < NUMPOINTS-2-PARAMETERS.E_PTS-PARAMETERS.F_PTS ; n++) {
+            // Extract the coordinates of the three data points
+            double x1 = POINTS[n].XPOS;
+            double y1 = POINTS[n].YPOS;
+            double x2 = POINTS[n+1+PARAMETERS.E_PTS].XPOS;
+            double y2 = POINTS[n+1+PARAMETERS.E_PTS].YPOS;
+            double x3 = POINTS[n+2+PARAMETERS.F_PTS].XPOS;
+            double y3 = POINTS[n+2+PARAMETERS.F_PTS].YPOS;
+
+            // Calculate the area of the three data points
+            double area = Math.abs((x1*(y2-y3)+x2*(y3-y1)+x3*(y1-y2))/2);
+
+            if (area > PARAMETERS.AREA1) {
+                CMV[10] = true;
+                return;
+            }
+        }
+        CMV[10] = false;
+
+
+    }
 }   
