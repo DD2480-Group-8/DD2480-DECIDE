@@ -28,7 +28,11 @@ public class DecideTest {
                 1
         );
          decide = new Decide(
+<<<<<<< HEAD
                 2,
+=======
+                1,
+>>>>>>> 237c279f1bf6e682fc3f4122e739d795f36cd3fb
                 new Coordinate[]{new Coordinate(0, 2), new Coordinate(0, 3)},
                 params,
                 new Decide.CONNECTORS[15][15],
@@ -59,7 +63,11 @@ public class DecideTest {
                 1
         );
         decide = new Decide(
+<<<<<<< HEAD
                 2,
+=======
+                1,
+>>>>>>> 237c279f1bf6e682fc3f4122e739d795f36cd3fb
                 new Coordinate[]{new Coordinate(10, 2), new Coordinate(0, 2)},
                 params,
                 new Decide.CONNECTORS[15][15],
