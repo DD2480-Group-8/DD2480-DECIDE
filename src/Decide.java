@@ -37,7 +37,10 @@ public class Decide {
     }
 
     /**
-     * Launch Condition 1: There cannot be three consecutive points contained within or on a circle of radius radius1
+     * Implementation of LIC1: There exists at least one set of three consecutive data points that cannot all be contained
+     * within or on a circle of radius RADIUS1.
+     * Finds the center between three points, and checks if there is any point that is a distance greater than RADIUS1
+     * from the center.
      */
     public void LIC1() {
         for (int i = 2; i < NUMPOINTS; i++) {
