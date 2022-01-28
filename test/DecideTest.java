@@ -114,4 +114,31 @@ public class DecideTest {
         decide.LIC0();
         Assert.assertTrue(decide.CMV[0]);
     }
+
+    @Test
+    public void LIC1TestFalse() {
+        setup1();
+        decide.POINTS = new Coordinate[] {
+                new Coordinate(1, 1),
+                new Coordinate(1, 1),
+                new Coordinate(1, 0)
+        };
+        params.RADIUS1 = 1;
+        decide.LIC1();
+        Assert.assertFalse(decide.CMV[1]);
+    }
+
+    @Test
+    public void LIC1TestTrue() {
+        setup1();
+        decide.POINTS = new Coordinate[] {
+                new Coordinate(0, 0),
+                new Coordinate(0, 10),
+                new Coordinate(0, 0)
+        };
+        decide.NUMPOINTS = decide.POINTS.length;
+        params.RADIUS1 = 1;
+        decide.LIC1();
+        Assert.assertTrue(decide.CMV[1]);
+    }
 }
