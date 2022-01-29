@@ -35,6 +35,38 @@ public class Decide {
             }
         }
     }
+    
+    public void LIC2(){
+        for(int i = 0; i < NUMPOINTS-2; i++){
+            if(checkAngle(POINTS[i], POINTS[i+1], POINTS[i+2])){
+                CMV[2] = true;
+                return;
+            }
+        }
+        CMV[2] = false;
+    }
+
+    private boolean checkAngle(Coordinate i, Coordinate j, Coordinate k){
+        i = coordSubtract(i,j);
+        k = coordSubtract(k,j);
+        if((i.XPOS == 0 && i.YPOS == 0) || (k.XPOS == 0 && k.YPOS == 0)){
+            return false;
+        }
+        double dotProduct = i.XPOS * k.XPOS + i.YPOS * k.YPOS;
+        double lenProduct = Math.sqrt(Math.pow(i.XPOS,2) + Math.pow(i.YPOS,2)) * Math.sqrt(Math.pow(k.XPOS,2) + Math.pow(k.YPOS,2));
+        double angle = Math.acos(dotProduct/lenProduct);
+        if( angle > Math.PI + PARAMETERS.EPSILON || angle < Math.PI - PARAMETERS.EPSILON){
+            return true;
+        }
+        return false;
+    }
+
+    private Coordinate coordSubtract(Coordinate i, Coordinate j){
+        Coordinate res = new Coordinate();
+        res.XPOS = i.XPOS-j.XPOS;
+        res.YPOS = i.YPOS - j.YPOS;
+        return(res);
+    }
 
     public int simpleAddition(int x, int y) {
         return x + y;
