@@ -38,7 +38,8 @@ public class Decide {
     
     public void LIC2(){
         for(int i = 0; i < NUMPOINTS-2; i++){
-            if(checkAngle(POINTS[i], POINTS[i+1], POINTS[i+2])){
+            double angle = checkAngle(POINTS[i], POINTS[i+1], POINTS[i+2]);
+            if( angle > Math.PI + PARAMETERS.EPSILON || angle < Math.PI - PARAMETERS.EPSILON){
                 CMV[2] = true;
                 return;
             }
@@ -46,7 +47,7 @@ public class Decide {
         CMV[2] = false;
     }
 
-    private boolean checkAngle(Coordinate i, Coordinate j, Coordinate k){
+    private double checkAngle(Coordinate i, Coordinate j, Coordinate k){
         i = coordSubtract(i,j);
         k = coordSubtract(k,j);
         if((i.XPOS == 0 && i.YPOS == 0) || (k.XPOS == 0 && k.YPOS == 0)){
@@ -54,16 +55,12 @@ public class Decide {
         }
         double dotProduct = i.XPOS * k.XPOS + i.YPOS * k.YPOS;
         double lenProduct = Math.sqrt(Math.pow(i.XPOS,2) + Math.pow(i.YPOS,2)) * Math.sqrt(Math.pow(k.XPOS,2) + Math.pow(k.YPOS,2));
-        double angle = Math.acos(dotProduct/lenProduct);
-        if( angle > Math.PI + PARAMETERS.EPSILON || angle < Math.PI - PARAMETERS.EPSILON){
-            return true;
-        }
-        return false;
+        return Math.acos(dotProduct/lenProduct);
     }
 
     private Coordinate coordSubtract(Coordinate i, Coordinate j){
         Coordinate res = new Coordinate();
-        res.XPOS = i.XPOS-j.XPOS;
+        res.XPOS = i.XPOS - j.XPOS;
         res.YPOS = i.YPOS - j.YPOS;
         return(res);
     }
