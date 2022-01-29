@@ -118,7 +118,7 @@ public class DecideTest {
     public void LIC2TestFalse() {
         setup1();
         decide.NUMPOINTS = 3;
-        decide.PARAMETERS.EPSILON = Math.PI/8;
+        decide.PARAMETERS.EPSILON = Math.PI*7/8;
         decide.POINTS = new Coordinate[] {
             new Coordinate(1, 1),
             new Coordinate(0, 0),
