@@ -30,8 +30,16 @@ public class Decide {
 
     public void LIC0() {
         for (int i = 1; i < NUMPOINTS; i++) {
-            if (Math.sqrt(Math.pow(POINTS[i].XPOS - POINTS[i-1].XPOS, 2) + Math.pow(POINTS[i].YPOS - POINTS[i-1].YPOS, 2)) > PARAMETERS.LENGTH1) {
+            if (Math.sqrt(Math.pow(POINTS[i].XPOS - POINTS[i - 1].XPOS, 2) + Math.pow(POINTS[i].YPOS - POINTS[i - 1].YPOS, 2)) > PARAMETERS.LENGTH1) {
                 CMV[0] = true;
+            }
+        }
+    }
+    public void LIC5() {
+        for (int i = 1; i < NUMPOINTS; i++) {
+            double diff = POINTS[i].XPOS - POINTS[i-1].XPOS;
+            if (diff < 0) {
+                CMV[5] = true;
             }
         }
     }

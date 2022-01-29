@@ -140,5 +140,19 @@ public class DecideTest {
         params.RADIUS1 = 1;
         decide.LIC1();
         Assert.assertTrue(decide.CMV[1]);
+
     }
+   
+    @Test
+    public void LIC5TestFalse() {
+        setup1();
+        decide.LIC5();
+        Assert.assertFalse(decide.CMV[5]);
+    }
+
+    @Test
+    public void LIC5TestTrue() {
+        setup2();
+        decide.LIC5();
+        Assert.assertTrue(decide.CMV[5]);
 }
