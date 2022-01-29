@@ -44,6 +44,32 @@ public class Decide {
         }
     }
 
+    /**
+     * Implementation of LIC1: There exists at least one set of three consecutive data points that cannot all be contained
+     * within or on a circle of radius RADIUS1.
+     * Finds the center between three points, and checks if there is any point that is a distance greater than RADIUS1
+     * from the center.
+     */
+    public void LIC1() {
+        for (int i = 2; i < NUMPOINTS; i++) {
+            // Find the centroid.
+            Coordinate centroid = new Coordinate(
+                    (POINTS[i].XPOS + POINTS[i-1].XPOS + POINTS[i-2].XPOS) / 3,
+                    (POINTS[i].YPOS + POINTS[i-1].YPOS + POINTS[i-2].YPOS) / 3
+            );
+            // Check if any of the points have a distance to the centroid larger than the radius.
+            if (
+                    (Math.sqrt(Math.pow(POINTS[i].XPOS - centroid.XPOS, 2) + Math.pow(POINTS[i].YPOS - centroid.YPOS, 2)) > PARAMETERS.RADIUS1)
+                    || (Math.sqrt(Math.pow(POINTS[i-1].XPOS - centroid.XPOS, 2) + Math.pow(POINTS[i-1].YPOS - centroid.YPOS, 2)) > PARAMETERS.RADIUS1)
+                    || (Math.sqrt(Math.pow(POINTS[i-2].XPOS - centroid.XPOS, 2) + Math.pow(POINTS[i-2].YPOS - centroid.YPOS, 2)) > PARAMETERS.RADIUS1)
+            ) {
+                CMV[1] = true;
+                break; // only need one set of points to fulfill this, no need to continue the loop.
+            }
+        }
+
+    }
+
     public int simpleAddition(int x, int y) {
         return x + y;
     }
