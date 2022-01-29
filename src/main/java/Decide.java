@@ -24,22 +24,10 @@ public class Decide {
         this.PUV = PUV;
     }
 
-    public static void main(String[] args) {
-//        System.out.println("Hello World");
-    }
-
     public void LIC0() {
         for (int i = 1; i < NUMPOINTS; i++) {
             if (Math.sqrt(Math.pow(POINTS[i].XPOS - POINTS[i - 1].XPOS, 2) + Math.pow(POINTS[i].YPOS - POINTS[i - 1].YPOS, 2)) > PARAMETERS.LENGTH1) {
                 CMV[0] = true;
-            }
-        }
-    }
-    public void LIC5() {
-        for (int i = 1; i < NUMPOINTS; i++) {
-            double diff = POINTS[i].XPOS - POINTS[i-1].XPOS;
-            if (diff < 0) {
-                CMV[5] = true;
             }
         }
     }
@@ -60,21 +48,16 @@ public class Decide {
             // Check if any of the points have a distance to the centroid larger than the radius.
             if (
                     (Math.sqrt(Math.pow(POINTS[i].XPOS - centroid.XPOS, 2) + Math.pow(POINTS[i].YPOS - centroid.YPOS, 2)) > PARAMETERS.RADIUS1)
-                    || (Math.sqrt(Math.pow(POINTS[i-1].XPOS - centroid.XPOS, 2) + Math.pow(POINTS[i-1].YPOS - centroid.YPOS, 2)) > PARAMETERS.RADIUS1)
-                    || (Math.sqrt(Math.pow(POINTS[i-2].XPOS - centroid.XPOS, 2) + Math.pow(POINTS[i-2].YPOS - centroid.YPOS, 2)) > PARAMETERS.RADIUS1)
+                            || (Math.sqrt(Math.pow(POINTS[i-1].XPOS - centroid.XPOS, 2) + Math.pow(POINTS[i-1].YPOS - centroid.YPOS, 2)) > PARAMETERS.RADIUS1)
+                            || (Math.sqrt(Math.pow(POINTS[i-2].XPOS - centroid.XPOS, 2) + Math.pow(POINTS[i-2].YPOS - centroid.YPOS, 2)) > PARAMETERS.RADIUS1)
             ) {
                 CMV[1] = true;
                 break; // only need one set of points to fulfill this, no need to continue the loop.
             }
         }
-
     }
 
-    public int simpleAddition(int x, int y) {
-        return x + y;
-    }
-
-    /*
+    /**
     *   LIC 3 is:
     *   There exists at least one set of three consecutive data points that are the vertices of a triangle
     *   with area greater than AREA1. (0 ≤ AREA1)
@@ -106,6 +89,49 @@ public class Decide {
         CMV[3] = false;
     }
 
+    public void LIC5() {
+        for (int i = 1; i < NUMPOINTS; i++) {
+            double diff = POINTS[i].XPOS - POINTS[i-1].XPOS;
+            if (diff < 0) {
+                CMV[5] = true;
+            }
+        }
+    }
+
+    /**
+     * LIC 7 is:
+     * There exists at least one set of two data points separated by exactly K_PTS consecutive
+     * intervening points that are a distance greater than the length, LENGTH1, apart.
+     * The condition is not met when NUMPOINTS < 3.
+     * 1 ≤ K_PTS ≤ (NUMPOINTS − 2)
+     */
+    public void LIC7() {
+        if (
+                (NUMPOINTS < 3)
+                || (PARAMETERS.K_PTS < 1)
+                || (PARAMETERS.K_PTS > NUMPOINTS-2)
+        ) {
+            CMV[7] = false;
+            return;
+        }
+
+        for (int n = 0 ; n < NUMPOINTS-1-PARAMETERS.K_PTS ; n++) {
+            // Extract the coordinates of the two data points
+            double x1 = POINTS[n].XPOS;
+            double y1 = POINTS[n].YPOS;
+            double x2 = POINTS[n+1+PARAMETERS.K_PTS].XPOS;
+            double y2 = POINTS[n+1+PARAMETERS.K_PTS].YPOS;
+
+            // Calculate the distance between the two data points
+            double distance = Math.sqrt(Math.pow(x1-x2, 2) + Math.pow(y1-y2, 2));
+
+            if (distance > PARAMETERS.LENGTH1) {
+                CMV[7] = true;
+                return;
+            }
+        }
+        CMV[7] = false;
+    }
   
     /**
      * LIC 10 is:

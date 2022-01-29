@@ -67,7 +67,7 @@ public class DecideTest {
         );
     }
 
-    // Tests starts below
+    // Write tests below
 
     @Test
     public void LIC0TestFalse() {
@@ -179,6 +179,78 @@ public class DecideTest {
 
     }
 
+
+    /**
+     * Tests the LIC7 method that it executes correctly and sets CMV[7] to true.
+     */
+    @Test
+    public void LIC7PositiveTest() {
+        // Setup of parameters to use
+        setup1();
+        // Change certain parameters to test valid case
+        decide.POINTS = new Coordinate[]{
+                new Coordinate(1,1),
+                new Coordinate(0,0),
+                new Coordinate(2,2)
+        };
+        decide.NUMPOINTS = decide.POINTS.length;
+        params.K_PTS = 1;
+        params.LENGTH1 = 1;
+
+        // Executes method
+        decide.LIC7();
+
+        // Asserts that it sets CMV[7] to true
+        Assert.assertTrue(decide.CMV[7]);
+    }
+
+    /**
+     * Tests the LIC7 method that it executes correctly and sets CMV[7] to false,
+     * since the distance is smaller than PARAMETER.LENGTH1
+     */
+    @Test
+    public void LIC7NegativeTest() {
+        // Setup of parameters to use
+        setup1();
+        // Change certain parameters to test invalid case
+        decide.POINTS = new Coordinate[]{
+                new Coordinate(1,1),
+                new Coordinate(0,0),
+                new Coordinate(2,2)
+        };
+        decide.NUMPOINTS = decide.POINTS.length;
+        params.K_PTS = 1;
+        params.LENGTH1 = 2;
+
+        // Executes method
+        decide.LIC7();
+
+        // Asserts that it sets CMV[7] to false
+        Assert.assertFalse(decide.CMV[7]);
+    }
+
+    /**
+     * Tests the LIC7 method that it executes correctly and sets CMV[7] to false.
+     */
+    @Test
+    public void LIC7InvalidTest() {
+        // Setup of parameters to use
+        setup1();
+        // Change certain parameters to test valid case
+        decide.POINTS = new Coordinate[]{
+                new Coordinate(1,1),
+                new Coordinate(0,0)
+        };
+        decide.NUMPOINTS = decide.POINTS.length;
+        params.K_PTS = 1;
+        params.LENGTH1 = 1;
+
+        // Executes method
+        decide.LIC7();
+
+        // Asserts that it sets CMV[7] to false
+        Assert.assertFalse(decide.CMV[7]);
+    }
 
     /**
      * Tests the LIC10 method that it executes correctly and sets CMV[10] to true.
