@@ -38,7 +38,7 @@ public class Decide {
     public void LIC5() {
         for (int i = 1; i < NUMPOINTS; i++) {
             double diff = POINTS[i].XPOS - POINTS[i-1].XPOS;
-            if (POINTS[i].XPOS - POINTS[i-1].XPOS < 0) {
+            if (diff < 0) {
                 CMV[5] = true;
             }
         }
