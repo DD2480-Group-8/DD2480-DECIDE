@@ -25,13 +25,21 @@ public class Decide {
     }
 
     public static void main(String[] args) {
-        System.out.println("Hello World");
+//        System.out.println("Hello World");
     }
 
     public void LIC0() {
         for (int i = 1; i < NUMPOINTS; i++) {
-            if (Math.sqrt(Math.pow(POINTS[i].XPOS - POINTS[i-1].XPOS, 2) + Math.pow(POINTS[i].YPOS - POINTS[i-1].YPOS, 2)) > PARAMETERS.LENGTH1) {
+            if (Math.sqrt(Math.pow(POINTS[i].XPOS - POINTS[i - 1].XPOS, 2) + Math.pow(POINTS[i].YPOS - POINTS[i - 1].YPOS, 2)) > PARAMETERS.LENGTH1) {
                 CMV[0] = true;
+            }
+        }
+    }
+    public void LIC5() {
+        for (int i = 1; i < NUMPOINTS; i++) {
+            double diff = POINTS[i].XPOS - POINTS[i-1].XPOS;
+            if (diff < 0) {
+                CMV[5] = true;
             }
         }
     }
@@ -66,7 +74,39 @@ public class Decide {
         return x + y;
     }
 
+    /*
+    *   LIC 3 is:
+    *   There exists at least one set of three consecutive data points that are the vertices of a triangle
+    *   with area greater than AREA1. (0 ≤ AREA1)
+    *
+    */
+    public void LIC3(){
+        if (NUMPOINTS < 3) {
+            CMV[3] = false;
+            return;
+        }
 
+        for (int n = 0 ; n < NUMPOINTS-2 ; n++) {
+            // Extract the coordinates of the three consecutive data points
+            double x1 = POINTS[n].XPOS;
+            double y1 = POINTS[n].YPOS;
+            double x2 = POINTS[n+1].XPOS;
+            double y2 = POINTS[n+1].YPOS;
+            double x3 = POINTS[n+2].XPOS;
+            double y3 = POINTS[n+2].YPOS;
+
+            // Calculate the area of the three consecutive data points
+            double area = Math.abs((x1*(y2-y3)+x2*(y3-y1)+x3*(y1-y2))/2);
+
+            if (area > PARAMETERS.AREA1) {
+                CMV[3] = true;
+                return;
+            }
+        }
+        CMV[3] = false;
+    }
+
+  
     /**
      * LIC 10 is:
      * There exists at least one set of three data points separated by exactly E_PTS and F_PTS consecutive
