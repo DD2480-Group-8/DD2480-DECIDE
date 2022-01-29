@@ -51,6 +51,10 @@ public class Decide {
     * last point (or both) coincides with the vertex, the angle is undefined and the LIC is not satisfied by those three points.
     */
     public void LIC2(){
+        if(NUMPOINTS < 3){
+            CMV[2] = false;
+            return;
+        }
         for(int i = 0; i < NUMPOINTS-2; i++){
             double angle = checkAngle(POINTS[i], POINTS[i+1], POINTS[i+2]);
             if( angle > Math.PI + PARAMETERS.EPSILON || angle < Math.PI - PARAMETERS.EPSILON){
