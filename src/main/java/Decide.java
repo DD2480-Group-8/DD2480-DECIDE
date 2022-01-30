@@ -1,3 +1,5 @@
+import java.util.Arrays;
+
 public class Decide {
 
     enum CONNECTORS {
@@ -121,6 +123,58 @@ public class Decide {
         }
         // offset and offset2 set to 0 since there are no intervening data points
         CMV[3] = threePointsAreaComparison(PARAMETERS.AREA1, true, 0,0);
+    }
+
+    /**
+     * Implements LIC 4:
+     * There exists at least one set of Q PTS consecutive data points that lie in more than QUADS quadrants.
+     * Where there is ambiguity as to which quadrant contains a given point, priority of decision will be
+     * by quadrant number, i.e., I, II, III, IV.
+     * For example, the data point (0,0) is in quadrant I, the point (-l,0) is in quadrant II,
+     * the point (0,-l) is in quadrant III, the point (0,1) is in quadrant I and the point (1,0) is in quadrant I.
+     * (2 ≤ Q PTS ≤ NUMPOINTS), (1 ≤ QUADS ≤ 3)
+     */
+    public void LIC4() {
+        // Check input conditions
+        if (
+                (PARAMETERS.Q_PTS < 2)
+                || (PARAMETERS.Q_PTS > NUMPOINTS)
+                || (PARAMETERS.QUADS > 3)
+                || (PARAMETERS.QUADS < 1)
+        ) {
+            CMV[4] = false;
+            return;
+        }
+
+        // start at Q_PTS and look at the sequence of Q_PTS behind iterator i.
+        for (int i = PARAMETERS.Q_PTS; i < NUMPOINTS; i++) {
+
+            // used to keep track of which quadrants have been seen in the current sequence.
+            int[] quadrants = new int[]{ 0, 0, 0, 0 };
+
+            for (int j = 0; j <= PARAMETERS.Q_PTS; j++) {
+                Coordinate point = POINTS[i-j];
+                // 1st quadrant
+                if (point.XPOS >= 0 && point.YPOS >= 0) {
+                    quadrants[0] = 1;
+                // 2nd quadrant
+                } else if (point.XPOS < 0 && point.YPOS >= 0) {
+                    quadrants[1] = 1;
+                // 3rd quadrant
+                } else if (point.XPOS <= 0 && point.YPOS < 0) {
+                    quadrants[2] = 1;
+                // 4th quadrant
+                } else {
+                    quadrants[3] = 1;
+                }
+            }
+
+            // consecutive data points that lie in _more_ than QUADS quadrants.
+            if (Arrays.stream(quadrants).sum() > PARAMETERS.QUADS) {
+                CMV[4] = true;
+                return;
+            }
+        }
     }
 
     public void LIC5() {

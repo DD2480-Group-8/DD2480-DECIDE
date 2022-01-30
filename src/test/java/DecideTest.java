@@ -230,6 +230,73 @@ public class DecideTest {
         // Asserts that it sets CMV[3] to false
         Assert.assertFalse(decide.CMV[3]);
     }
+
+    @Test
+    public void LIC4TestTrue() {
+        setup1();
+        // set up one point in each quadrant, check for more than 3 quadrants, should return true.
+        decide.POINTS = new Coordinate[] {
+                new Coordinate(1, 1), // 1st
+                new Coordinate(-1, 1), // 2nd
+                new Coordinate(-1, -1), // 3rd
+                new Coordinate(1, -1) // 4th
+        };
+        decide.NUMPOINTS = decide.POINTS.length;
+        params.QUADS = 3; // should be between 1 and 3 (inclusive).
+        params.Q_PTS = 3; // should be between 2 and numpoints (inclusive).
+        decide.LIC4();
+        Assert.assertTrue(decide.CMV[4]);
+    }
+
+    @Test
+    public void LIC4TestFalse() {
+        setup1();
+        // set up all points in 1st and 2nd quadrant, check for more than 2 quadrants, should return false.
+        decide.POINTS = new Coordinate[] {
+                new Coordinate(1, 1), // 1st
+                new Coordinate(2, 2), // 1st
+                new Coordinate(-1, 1), // 2nd
+                new Coordinate(-2, 2) // 2nd
+        };
+        decide.NUMPOINTS = decide.POINTS.length;
+        params.QUADS = 2; // should be between 1 and 3 (inclusive).
+        params.Q_PTS = 3; // should be between 2 and numpoints (inclusive).
+        decide.LIC4();
+        Assert.assertFalse(decide.CMV[4]);
+    }
+
+    @Test
+    public void LIC4TestInvalidInputs() {
+        setup1();
+        // set up all points in 1st and 2nd quadrant, set quandrants to 0, should return false.
+        decide.POINTS = new Coordinate[] {
+                new Coordinate(1, 1), // 1st
+                new Coordinate(2, 2), // 1st
+                new Coordinate(-1, 1), // 2nd
+                new Coordinate(-2, 2) // 2nd
+        };
+        decide.NUMPOINTS = decide.POINTS.length;
+        params.QUADS = 0; // should be between 1 and 3 (inclusive).
+        params.Q_PTS = 3; // should be between 2 and numpoints (inclusive).
+        decide.LIC4();
+        Assert.assertFalse(decide.CMV[4]);
+
+        // with quads > 3
+        params.QUADS = 4; // should be between 1 and 3 (inclusive).
+        decide.LIC4();
+        Assert.assertFalse(decide.CMV[4]);
+
+        // with Q_PTS < 2
+        params.Q_PTS = 1;
+        decide.LIC4();
+        Assert.assertFalse(decide.CMV[4]);
+
+        // with Q_PTS > numpoints
+        params.Q_PTS = decide.NUMPOINTS + 1;
+        decide.LIC4();
+        Assert.assertFalse(decide.CMV[4]);
+    }
+
   
     @Test
     public void LIC5TestFalse() {
