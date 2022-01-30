@@ -345,4 +345,61 @@ public class Decide {
         }
         CMV[11] = false;
     }
+    /**
+     LIC 13 is:
+     There exists at least one set of three data points, separated by exactly A PTS and B PTS
+     consecutive intervening points, respectively, that cannot be contained within or on a circle of
+     radius RADIUS1. In addition, there exists at least one set of three data points (which can be
+     the same or different from the three data points just mentioned) separated by exactly A PTS
+     and B PTS consecutive intervening points, respectively, that can be contained in or on a
+     circle of radius RADIUS2. Both parts must be true for the LIC to be true. The condition is
+     not met when NUMPOINTS < 5.
+     0 < RADIUS2
+     */
+    public void LIC13() {
+        if (NUMPOINTS < 5) {
+            CMV[13] = false;
+            return;
+        }
+        // Initialise booleans for both conditions as false once
+        boolean con1 = false;
+        boolean con2 = false;
+        for (int i = 0 ; i < NUMPOINTS - PARAMETERS.A_PTS - PARAMETERS.B_PTS - 2 ; i++) {
+            // Extract the coordinates of the three data points
+            double x1 = POINTS[i].XPOS;
+            double y1 = POINTS[i].YPOS;
+            double x2 = POINTS[i + 1 + PARAMETERS.E_PTS].XPOS;
+            double y2 = POINTS[i + 1 + PARAMETERS.E_PTS].YPOS;
+            double x3 = POINTS[i + 2 + PARAMETERS.E_PTS + PARAMETERS.F_PTS].XPOS;
+            double y3 = POINTS[i + 2 + PARAMETERS.E_PTS + PARAMETERS.F_PTS].YPOS;
+
+            // Find the centroid.
+            Coordinate centroid = new Coordinate(
+                    (x1 + x2 + x3) / 3,
+                    (y1 + y2 + y3) / 3
+            );
+            // Check if any of the points have a distance to the centroid larger than RADIUS1.
+            if (
+                    (Math.sqrt(Math.pow(x1 - centroid.XPOS, 2) + Math.pow(y1 - centroid.YPOS, 2)) > PARAMETERS.RADIUS1)
+                            || (Math.sqrt(Math.pow(x2 - centroid.XPOS, 2) + Math.pow(y2 - centroid.YPOS, 2)) > PARAMETERS.RADIUS1)
+                            || (Math.sqrt(Math.pow(x3 - centroid.XPOS, 2) + Math.pow(y3 - centroid.YPOS, 2)) > PARAMETERS.RADIUS1)
+            ){
+                con1 = true;
+            }
+            // Check if all the points have a distance to the centroid smaller than RADIUS2.
+            if (
+                    (Math.sqrt(Math.pow(x1 - centroid.XPOS, 2) + Math.pow(y1 - centroid.YPOS, 2)) < PARAMETERS.RADIUS2)
+                            && (Math.sqrt(Math.pow(x2 - centroid.XPOS, 2) + Math.pow(y2 - centroid.YPOS, 2)) < PARAMETERS.RADIUS2)
+                            && (Math.sqrt(Math.pow(x3 - centroid.XPOS, 2) + Math.pow(y3 - centroid.YPOS, 2)) < PARAMETERS.RADIUS2)
+            ){
+                con2 = true;
+            }
+            if (con1 && con2){
+                CMV[13] = true;
+                return;
+            }
+        }
+        CMV[13] = false;
+    }
+
 }   
