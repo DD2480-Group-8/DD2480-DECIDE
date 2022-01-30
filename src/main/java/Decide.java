@@ -32,6 +32,64 @@ public class Decide {
         }
     }
 
+
+    public void LIC5() {
+        for (int i = 1; i < NUMPOINTS; i++) {
+            double diff = POINTS[i].XPOS - POINTS[i-1].XPOS;
+            if (diff < 0) {
+                CMV[5] = true;
+            }
+        }
+    }
+
+
+    /*
+    * Implementation of LIC2: There exists at least one set of three consecutive data points which form an angle such that: angle < (PI − EPSILON)
+    * or angle > (PI + EPSILON). The second of the three consecutive points is always the vertex of the angle. If either the first point or the 
+    * last point (or both) coincides with the vertex, the angle is undefined and the LIC is not satisfied by those three points.
+    */
+    public void LIC2(){
+        if(NUMPOINTS < 3){
+            CMV[2] = false;
+            return;
+        }
+        for(int i = 0; i < NUMPOINTS-2; i++){
+            double angle = checkAngle(POINTS[i], POINTS[i+1], POINTS[i+2]);
+            if( angle > Math.PI + PARAMETERS.EPSILON || angle < Math.PI - PARAMETERS.EPSILON){
+                CMV[2] = true;
+                return;
+            }
+        }
+        CMV[2] = false;
+    }
+
+    /*
+    * Helper function that figures out the angle formed by 3 Coordinates. 
+    * The second argument is the vertex of the angle. 
+    */
+    public double checkAngle(Coordinate i, Coordinate j, Coordinate k){
+        i = coordSubtract(i,j);
+        k = coordSubtract(k,j);
+        if((i.XPOS == 0 && i.YPOS == 0) || (k.XPOS == 0 && k.YPOS == 0)){
+            return Math.PI;
+        }
+        double dotProduct = i.XPOS * k.XPOS + i.YPOS * k.YPOS;
+        double lenProduct = Math.sqrt(Math.pow(i.XPOS,2) + Math.pow(i.YPOS,2)) * Math.sqrt(Math.pow(k.XPOS,2) + Math.pow(k.YPOS,2));
+        return Math.acos(dotProduct/lenProduct);
+    }
+
+    /*
+    * Helper function that subtracts one Coordinate from another. 
+    */
+    public Coordinate coordSubtract(Coordinate i, Coordinate j){
+        Coordinate res = new Coordinate(0,0);
+        res.XPOS = i.XPOS - j.XPOS;
+        res.YPOS = i.YPOS - j.YPOS;
+        return(res);
+    }
+
+
+
     /**
      * Implementation of LIC1: There exists at least one set of three consecutive data points that cannot all be contained
      * within or on a circle of radius RADIUS1.
