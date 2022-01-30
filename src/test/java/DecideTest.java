@@ -317,6 +317,61 @@ public class DecideTest {
     }
 
     /**
+     * Tests the LIC8 method that it executes correctly and sets CMV[8] to false.
+     */
+    @Test
+    public void LIC8InvalidTest() {
+        // Setup of parameters to use
+        setup1();
+        // Change certain parameters to test valid case
+        decide.POINTS = new Coordinate[]{
+                new Coordinate(1,1),
+                new Coordinate(1,1),
+                new Coordinate(2,2),
+                new Coordinate(3,1),
+                new Coordinate(1,1),
+                new Coordinate(1,2)
+        };
+        decide.NUMPOINTS = decide.POINTS.length;
+        params.A_PTS = 1;
+        params.B_PTS = 3;
+        params.RADIUS1 = 3;
+
+        // Executes method
+        decide.LIC8();
+
+        // Asserts that it sets CMV[8] to false
+        Assert.assertFalse(decide.CMV[8]);
+    }
+
+    /**
+     * Tests the LIC8 method that it executes correctly and sets CMV[8] to true.
+     */
+    @Test
+    public void LIC8ValidTest() {
+        // Setup of parameters to use
+        setup1();
+        // Change certain parameters to test valid case
+        decide.POINTS = new Coordinate[]{
+                new Coordinate(1,5),
+                new Coordinate(10,20),
+                new Coordinate(15,25),
+                new Coordinate(25,30),
+                new Coordinate(40,50),
+        };
+        decide.NUMPOINTS = decide.POINTS.length;
+        params.A_PTS = 1;
+        params.B_PTS = 2;
+        params.RADIUS1 = 3;
+
+        // Executes method
+        decide.LIC8();
+
+        // Asserts that it sets CMV[8] to true
+        Assert.assertTrue(decide.CMV[8]);
+    }
+
+    /**
      * Tests the LIC10 method that it executes correctly and sets CMV[10] to true.
      */
     @Test
