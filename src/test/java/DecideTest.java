@@ -316,6 +316,45 @@ public class DecideTest {
         Assert.assertFalse(decide.CMV[7]);
     }
 
+    /*
+    * Tests a negative case for the LIC 9 function.
+    */
+    @Test
+    public void LIC9NegativeTest() {
+        setup1();
+        decide.NUMPOINTS = 5;
+        decide.PARAMETERS.EPSILON = Math.PI*7/8;
+        decide.POINTS = new Coordinate[] {
+            new Coordinate(1, 1),
+            new Coordinate(0, 0),
+            new Coordinate(0, 0),
+            new Coordinate(0, 0),
+            new Coordinate(1, 0)
+        };
+        decide.LIC9();
+        Assert.assertFalse(decide.CMV[9]);
+    }
+
+    /*
+    * Tests a positive case for the LIC 9 function.
+    */
+    @Test
+    public void LIC9PositiveTest() {
+        setup1();
+        decide.POINTS = new Coordinate[] {
+            new Coordinate(0, 2),
+            new Coordinate(0, 0),
+            new Coordinate(0, 3),
+            new Coordinate(0, 0),
+            new Coordinate(1, 3)
+        };
+        decide.NUMPOINTS = 5;
+        decide.PARAMETERS.EPSILON = Math.PI/2 -0.1; 
+
+        decide.LIC9();
+        Assert.assertTrue(decide.CMV[9]);
+    }
+
     /**
      * Tests the LIC10 method that it executes correctly and sets CMV[10] to true.
      */

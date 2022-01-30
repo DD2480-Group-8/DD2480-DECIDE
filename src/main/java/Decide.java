@@ -181,6 +181,34 @@ public class Decide {
         }
         CMV[7] = false;
     }
+
+    /**
+     * LIC 9 is:
+     * There exists at least one set of three data points separated by exactly C PTS and D PTS consecutive 
+     * intervening points, respectively, that form an angle such that: angle < (PI − EPSILON) or angle > (PI + EPSILON)
+     * The second point of the set of three points is always the vertex of the angle. If either the first 
+     * point or the last point (or both) coincide with the vertex, the angle is undefined and the LIC is 
+     * not satisfied by those three points. When NUMPOINTS < 5, the condition is not met.
+     */
+    public void LIC9(){
+        if(NUMPOINTS < 5 || POINTS.length > 5){
+            CMV[9] = false;
+            return;
+        }
+        for(int i = 0; i < NUMPOINTS-PARAMETERS.C_PTS-PARAMETERS.D_PTS-2; i++){
+            double angle = checkAngle(
+                    POINTS[i], 
+                    POINTS[i+PARAMETERS.C_PTS+1], 
+                    POINTS[i+PARAMETERS.C_PTS+PARAMETERS.D_PTS+2]
+            );
+            if( angle > Math.PI + PARAMETERS.EPSILON || angle < Math.PI - PARAMETERS.EPSILON){
+                CMV[9] = true;
+                return;
+            }
+        }
+        CMV[9] = false;
+    }
+
   
     /**
      * LIC 10 is:
