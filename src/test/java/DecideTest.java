@@ -667,7 +667,7 @@ public class DecideTest {
         decide.NUMPOINTS = decide.POINTS.length;
         params.E_PTS = 1;
         params.F_PTS = 1;
-        params.AREA1 = 1;
+        params.AREA1 = 1.01;
 
         // Executes method
         decide.LIC10();
@@ -992,7 +992,7 @@ public class DecideTest {
         params.E_PTS = 1;
         params.F_PTS = 1;
         params.AREA1 = 1;
-        params.AREA2 = 2;
+        params.AREA2 = 1.99;
 
         // Executes method
         decide.LIC14();
@@ -1022,7 +1022,7 @@ public class DecideTest {
         params.E_PTS = 1;
         params.F_PTS = 1;
         params.AREA1 = 1;
-        params.AREA2 = 2;
+        params.AREA2 = 1.99;
 
         // Executes method
         decide.LIC14();

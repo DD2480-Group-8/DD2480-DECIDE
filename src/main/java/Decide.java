@@ -298,6 +298,9 @@ public class Decide {
                     POINTS[n+2+offset+offset2]
             );
 
+            System.out.println("area: " + area);
+            System.out.println("ThisArea: " + thisArea);
+
             // If-condition to know if thisArea should be greater or less than area
             if (shouldBeGreater) {
                 if (thisArea >= area) {
