@@ -182,7 +182,7 @@ public class DecideTest {
      * Tests the LIC3 method that it executes correctly and sets CMV[3] to true.
      */
     @Test
-    public void LEC3PositiveTest() {
+    public void LIC3PositiveTest() {
         // Setup of parameters to use
         setup1();
         // Change certain parameters to test invalid case
@@ -200,7 +200,7 @@ public class DecideTest {
      * due to the area being too small.
      */
     @Test
-    public void LEC3NegativeTest() {
+    public void LIC3NegativeTest() {
         // Setup of parameters to use
         setup1();
         // Change certain parameters to test invalid case
@@ -218,7 +218,7 @@ public class DecideTest {
      * due to too few coordinates.
      */
     @Test
-    public void LEC3InvalidTest() {
+    public void LIC3InvalidTest() {
         // Setup of parameters to use
         setup1();
         // Change certain parameters to test invalid case
@@ -244,6 +244,188 @@ public class DecideTest {
         decide.LIC5();
         Assert.assertTrue(decide.CMV[5]);
 
+    }
+
+        /**
+     * Tests the LIC6 method that it executes correctly and sets CMV[6] to true.
+     */
+    @Test
+    public void LIC6PositiveTest() {
+        // Setup of parameters to use
+        setup1();
+        // Change certain parameters to test valid case
+        decide.POINTS = new Coordinate[]{
+        new Coordinate(0,1),
+        new Coordinate(1,3),
+        new Coordinate(2,1),
+        new Coordinate(3,1),
+        new Coordinate(4,1)
+        };
+        decide.NUMPOINTS = decide.POINTS.length;
+        params.N_PTS = 3;
+        params.DIST = 1;
+
+        // Executes method
+        decide.LIC6();
+
+        // Asserts that it sets CMV[6] to true
+        Assert.assertTrue(decide.CMV[6]);
+    }
+
+    /**
+     * Tests the LIC6 method that it executes correctly and sets CMV[6] to true when first and last points of these N_PTS are identical.
+     */
+    @Test
+    public void LIC6PositiveTest2() {
+        // Setup of parameters to use
+        setup1();
+        // Change certain parameters to test valid case
+        decide.POINTS = new Coordinate[]{
+            new Coordinate(0,1),
+            new Coordinate(1,3),
+            new Coordinate(0,1),
+            new Coordinate(3,1),
+            new Coordinate(4,1)
+        };
+        decide.NUMPOINTS = decide.POINTS.length;
+        params.N_PTS = 3;
+        params.DIST = 2;
+
+        // Executes method
+        decide.LIC6();
+
+        // Asserts that it sets CMV[6] to true
+        Assert.assertTrue(decide.CMV[6]);
+    }
+
+    /**
+     * Tests the LIC6 method that it executes correctly and sets CMV[6] to false.
+     */
+    @Test
+    public void LIC6NegativeTest() {
+        // Setup of parameters to use
+        setup1();
+        // Change certain parameters to test valid case
+        decide.POINTS = new Coordinate[]{
+                new Coordinate(0,1),
+                new Coordinate(1,1),
+                new Coordinate(2,1),
+                new Coordinate(3,1),
+                new Coordinate(4,1)
+        };
+        decide.NUMPOINTS = decide.POINTS.length;
+        params.N_PTS = 3;
+        params.DIST = 2;
+
+        // Executes method
+        decide.LIC6();
+
+        // Asserts that it sets CMV[6] to true
+        Assert.assertFalse(decide.CMV[6]);
+    }
+
+    /**
+     * Tests the LIC6 method that it executes correctly and sets CMV[6] to false due to NUMPOINTS<3.
+     */
+    @Test
+    public void LIC6NegativeTest2() {
+        // Setup of parameters to use
+        setup1();
+        // Change certain parameters to test valid case
+        decide.POINTS = new Coordinate[]{
+            new Coordinate(0,1),
+            new Coordinate(1,1),
+            new Coordinate(2,1),
+            new Coordinate(3,1),
+            new Coordinate(4,1)
+        };
+        decide.NUMPOINTS = decide.POINTS.length;
+        params.N_PTS = 2;
+        params.DIST = 2;
+
+        // Executes method
+        decide.LIC6();
+
+        // Asserts that it sets CMV[6] to true
+        Assert.assertFalse(decide.CMV[6]);
+    }
+    
+    /**
+     * Tests the LIC6 method that it executes correctly and sets CMV[6] to false due to PARAMETERS.N_PTS<3.
+     */
+    @Test
+    public void LIC6NegativeTest3() {
+        // Setup of parameters to use
+        setup1();
+        // Change certain parameters to test valid case
+        decide.POINTS = new Coordinate[]{
+                new Coordinate(0,1),
+                new Coordinate(1,1),
+                new Coordinate(2,1),
+                new Coordinate(3,1),
+                new Coordinate(4,1)
+        };
+        decide.NUMPOINTS = decide.POINTS.length;
+        params.N_PTS = 2;
+        params.DIST = 2;
+
+        // Executes method
+        decide.LIC6();
+
+        // Asserts that it sets CMV[6] to true
+        Assert.assertFalse(decide.CMV[6]);
+    }
+
+    /**
+     * Tests the LIC6 method that it executes correctly and sets CMV[6] to false due to NUMPOINTS<3.
+     */
+    @Test
+    public void LIC6NegativeTest4() {
+        // Setup of parameters to use
+        setup1();
+        // Change certain parameters to test valid case
+        decide.POINTS = new Coordinate[]{
+                new Coordinate(0,1),
+                new Coordinate(1,1),
+                new Coordinate(2,3),
+                new Coordinate(3,1),
+                new Coordinate(4,1)
+        };
+        decide.NUMPOINTS = decide.POINTS.length;
+        params.N_PTS = 2;
+        params.DIST = 2;
+
+        // Executes method
+        decide.LIC6();
+
+        // Asserts that it sets CMV[6] to true
+        Assert.assertFalse(decide.CMV[6]);
+    }
+
+    /**
+     * Tests the LIC6 method that it executes correctly and sets CMV[6] to false due to DIST<0.
+     */
+    @Test
+    public void LIC6NegativeTest5() {
+        // Setup of parameters to use
+        setup1();
+        // Change certain parameters to test valid case
+        decide.POINTS = new Coordinate[]{
+                new Coordinate(0,1),
+                new Coordinate(1,1),
+                new Coordinate(2,1),
+                new Coordinate(3,1),
+                new Coordinate(4,1)
+        };
+        decide.NUMPOINTS = decide.POINTS.length;
+        params.N_PTS = 3;
+        params.DIST = -1;
+
+        // Executes method
+        decide.LIC6();
+
+        // Asserts that it sets CMV[6] to true
+        Assert.assertFalse(decide.CMV[6]);
     }
 
 
@@ -319,6 +501,62 @@ public class DecideTest {
         Assert.assertFalse(decide.CMV[7]);
     }
 
+    /**
+     * Tests the LIC8 method that it executes correctly and sets CMV[8] to false.
+     */
+    @Test
+    public void LIC8InvalidTest() {
+        // Setup of parameters to use
+        setup1();
+        // Change certain parameters to test valid case
+        decide.POINTS = new Coordinate[]{
+                new Coordinate(1,1),
+                new Coordinate(1,1),
+                new Coordinate(2,2),
+                new Coordinate(3,1),
+                new Coordinate(1,1),
+                new Coordinate(1,2)
+        };
+        decide.NUMPOINTS = decide.POINTS.length;
+        params.A_PTS = 1;
+        params.B_PTS = 3;
+        params.RADIUS1 = 3;
+
+        // Executes method
+        decide.LIC8();
+
+        // Asserts that it sets CMV[8] to false
+        Assert.assertFalse(decide.CMV[8]);
+    }
+
+    /**
+     * Tests the LIC8 method that it executes correctly and sets CMV[8] to true.
+     */
+    @Test
+    public void LIC8ValidTest() {
+        // Setup of parameters to use
+        setup1();
+        // Change certain parameters to test valid case
+        decide.POINTS = new Coordinate[]{
+                new Coordinate(1,5),
+                new Coordinate(10,20),
+                new Coordinate(15,25),
+                new Coordinate(25,30),
+                new Coordinate(40,50),
+        };
+        decide.NUMPOINTS = decide.POINTS.length;
+        params.A_PTS = 1;
+        params.B_PTS = 2;
+        params.RADIUS1 = 3;
+
+        // Executes method
+        decide.LIC8();
+
+        // Asserts that it sets CMV[8] to true
+        Assert.assertTrue(decide.CMV[8]);
+    }
+
+
     /*
     * Tests a negative case for the LIC 9 function.
     */
@@ -383,61 +621,7 @@ public class DecideTest {
         Assert.assertTrue(decide.CMV[9]);
     }
 
-    /**
-     * Tests the LIC8 method that it executes correctly and sets CMV[8] to false.
-     */
-    @Test
-    public void LIC8InvalidTest() {
-        // Setup of parameters to use
-        setup1();
-        // Change certain parameters to test valid case
-        decide.POINTS = new Coordinate[]{
-                new Coordinate(1,1),
-                new Coordinate(1,1),
-                new Coordinate(2,2),
-                new Coordinate(3,1),
-                new Coordinate(1,1),
-                new Coordinate(1,2)
-        };
-        decide.NUMPOINTS = decide.POINTS.length;
-        params.A_PTS = 1;
-        params.B_PTS = 3;
-        params.RADIUS1 = 3;
-
-        // Executes method
-        decide.LIC8();
-
-        // Asserts that it sets CMV[8] to false
-        Assert.assertFalse(decide.CMV[8]);
-    }
-
-    /**
-     * Tests the LIC8 method that it executes correctly and sets CMV[8] to true.
-     */
-    @Test
-    public void LIC8ValidTest() {
-        // Setup of parameters to use
-        setup1();
-        // Change certain parameters to test valid case
-        decide.POINTS = new Coordinate[]{
-                new Coordinate(1,5),
-                new Coordinate(10,20),
-                new Coordinate(15,25),
-                new Coordinate(25,30),
-                new Coordinate(40,50),
-        };
-        decide.NUMPOINTS = decide.POINTS.length;
-        params.A_PTS = 1;
-        params.B_PTS = 2;
-        params.RADIUS1 = 3;
-
-        // Executes method
-        decide.LIC8();
-
-        // Asserts that it sets CMV[8] to true
-        Assert.assertTrue(decide.CMV[8]);
-    }
-
+    
     /**
      * Tests the LIC10 method that it executes correctly and sets CMV[10] to true.
      */
@@ -483,7 +667,7 @@ public class DecideTest {
         decide.NUMPOINTS = decide.POINTS.length;
         params.E_PTS = 1;
         params.F_PTS = 1;
-        params.AREA1 = 1;
+        params.AREA1 = 1.01;
 
         // Executes method
         decide.LIC10();
@@ -573,184 +757,6 @@ public class DecideTest {
 
         // Asserts that it sets CMV[10] to false
         Assert.assertFalse(decide.CMV[10]);
-
-    }
-
-    /**
-     * Tests the LIC6 method that it executes correctly and sets CMV[6] to true.
-     */
-    @Test
-    public void LIC6PositiveTest() {
-        // Setup of parameters to use
-        setup1();
-        // Change certain parameters to test valid case
-        decide.POINTS = new Coordinate[]{
-                new Coordinate(0,1),
-                new Coordinate(1,3),
-                new Coordinate(2,1),
-                new Coordinate(3,1),
-                new Coordinate(4,1)
-        };
-        decide.NUMPOINTS = decide.POINTS.length;
-        params.N_PTS = 3;
-        params.DIST = 1;
-
-        // Executes method
-        decide.LIC6();
-
-        // Asserts that it sets CMV[6] to true
-        Assert.assertTrue(decide.CMV[6]);
-    }
-    /**
-     * Tests the LIC6 method that it executes correctly and sets CMV[6] to true when first and last points of these N_PTS are identical.
-     */
-    @Test
-    public void LIC6PositiveTest2() {
-        // Setup of parameters to use
-        setup1();
-        // Change certain parameters to test valid case
-        decide.POINTS = new Coordinate[]{
-                new Coordinate(0,1),
-                new Coordinate(1,3),
-                new Coordinate(0,1),
-                new Coordinate(3,1),
-                new Coordinate(4,1)
-        };
-        decide.NUMPOINTS = decide.POINTS.length;
-        params.N_PTS = 3;
-        params.DIST = 2;
-
-        // Executes method
-        decide.LIC6();
-
-        // Asserts that it sets CMV[6] to true
-        Assert.assertTrue(decide.CMV[6]);
-    }
-
-    /**
-     * Tests the LIC6 method that it executes correctly and sets CMV[6] to false.
-     */
-    @Test
-    public void LIC6NegativeTest() {
-        // Setup of parameters to use
-        setup1();
-        // Change certain parameters to test valid case
-        decide.POINTS = new Coordinate[]{
-                new Coordinate(0,1),
-                new Coordinate(1,1),
-                new Coordinate(2,1),
-                new Coordinate(3,1),
-                new Coordinate(4,1)
-        };
-        decide.NUMPOINTS = decide.POINTS.length;
-        params.N_PTS = 3;
-        params.DIST = 2;
-
-        // Executes method
-        decide.LIC6();
-
-        // Asserts that it sets CMV[6] to true
-        Assert.assertFalse(decide.CMV[6]);
-    }
-    /**
-     * Tests the LIC6 method that it executes correctly and sets CMV[6] to false due to NUMPOINTS<3.
-     */
-    @Test
-    public void LIC6NegativeTest2() {
-        // Setup of parameters to use
-        setup1();
-        // Change certain parameters to test valid case
-        decide.POINTS = new Coordinate[]{
-                new Coordinate(0,1),
-                new Coordinate(1,1),
-                new Coordinate(2,1),
-                new Coordinate(3,1),
-                new Coordinate(4,1)
-        };
-        decide.NUMPOINTS = decide.POINTS.length;
-        params.N_PTS = 2;
-        params.DIST = 2;
-
-        // Executes method
-        decide.LIC6();
-
-        // Asserts that it sets CMV[6] to true
-        Assert.assertFalse(decide.CMV[6]);
-    }
-    /**
-     * Tests the LIC6 method that it executes correctly and sets CMV[6] to false due to PARAMETERS.N_PTS<3.
-     */
-    @Test
-    public void LIC6NegativeTest3() {
-        // Setup of parameters to use
-        setup1();
-        // Change certain parameters to test valid case
-        decide.POINTS = new Coordinate[]{
-                new Coordinate(0,1),
-                new Coordinate(1,1),
-                new Coordinate(2,1),
-                new Coordinate(3,1),
-                new Coordinate(4,1)
-        };
-        decide.NUMPOINTS = decide.POINTS.length;
-        params.N_PTS = 2;
-        params.DIST = 2;
-
-        // Executes method
-        decide.LIC6();
-
-        // Asserts that it sets CMV[6] to true
-        Assert.assertFalse(decide.CMV[6]);
-    }
-    /**
-     * Tests the LIC6 method that it executes correctly and sets CMV[6] to false due to NUMPOINTS<3.
-     */
-    @Test
-    public void LIC6NegativeTest4() {
-        // Setup of parameters to use
-        setup1();
-        // Change certain parameters to test valid case
-        decide.POINTS = new Coordinate[]{
-                new Coordinate(0,1),
-                new Coordinate(1,1),
-                new Coordinate(2,3),
-                new Coordinate(3,1),
-                new Coordinate(4,1)
-        };
-        decide.NUMPOINTS = decide.POINTS.length;
-        params.N_PTS = 2;
-        params.DIST = 2;
-
-        // Executes method
-        decide.LIC6();
-
-        // Asserts that it sets CMV[6] to true
-        Assert.assertFalse(decide.CMV[6]);
-    }
-    /**
-     * Tests the LIC6 method that it executes correctly and sets CMV[6] to false due to DIST<0.
-     */
-    @Test
-    public void LIC6NegativeTest5() {
-        // Setup of parameters to use
-        setup1();
-        // Change certain parameters to test valid case
-        decide.POINTS = new Coordinate[]{
-                new Coordinate(0,1),
-                new Coordinate(1,1),
-                new Coordinate(2,1),
-                new Coordinate(3,1),
-                new Coordinate(4,1)
-        };
-        decide.NUMPOINTS = decide.POINTS.length;
-        params.N_PTS = 3;
-        params.DIST = -1;
-
-        // Executes method
-        decide.LIC6();
-
-        // Asserts that it sets CMV[6] to true
-        Assert.assertFalse(decide.CMV[6]);
     }
 
     /**
@@ -901,5 +907,253 @@ public class DecideTest {
 
         // Asserts that it sets CMV[11] to false
         Assert.assertFalse(decide.CMV[11]);
+
+    }
+
+     /**
+     * Tests the LIC14 method that it executes correctly and sets CMV[14] to true.
+     */
+    @Test
+    public void LIC14PositiveTest() {
+        // Setup of parameters to use
+        setup1();
+        // Change certain parameters to test valid case
+        decide.POINTS = new Coordinate[]{
+                new Coordinate(0,0),
+                new Coordinate(-1,-1),
+                new Coordinate(2,0),
+                new Coordinate(3,3),
+                new Coordinate(0,2)
+        };
+        decide.NUMPOINTS = decide.POINTS.length;
+        params.E_PTS = 1;
+        params.F_PTS = 1;
+        params.AREA1 = 1;
+        params.AREA2 = 4;
+
+        // Executes method
+        decide.LIC14();
+
+        // Asserts that it sets CMV[14] to true
+        Assert.assertTrue(decide.CMV[14]);
+    }
+
+    /**
+
+     * Tests the LIC14 method that it executes correctly and sets CMV[14] to true.
+     */
+    @Test
+    public void LIC14PositiveTest2() {
+        // Setup of parameters to use
+        setup1();
+        // Change certain parameters to test valid case
+        decide.POINTS = new Coordinate[]{
+            new Coordinate(0,0),
+            new Coordinate(-1,-1),
+            new Coordinate(2,0),
+            new Coordinate(3,3),
+            new Coordinate(0,2),
+            new Coordinate(1,-1),
+            new Coordinate(4,-2),
+            new Coordinate(2,1),
+            new Coordinate(4,2),
+            new Coordinate(0,-2)
+        };
+        decide.NUMPOINTS = decide.POINTS.length;
+        params.E_PTS = 2;
+        params.F_PTS = 2;
+        params.AREA1 = 1;
+        params.AREA2 = 4;
+
+        // Executes method
+        decide.LIC14();
+
+        // Asserts that it sets CMV[14] to true
+        Assert.assertTrue(decide.CMV[14]);
+    }
+
+    /**
+     * Tests the LIC14 method that it executes correctly and sets CMV[14] to false.
+     * Only one possible triangle and it has area = 2.
+     */
+    @Test
+    public void LIC14NegativeTest() {
+        // Setup of parameters to use
+        setup1();
+        // Change certain parameters to test valid case
+        decide.POINTS = new Coordinate[]{
+            new Coordinate(0,0),
+            new Coordinate(-1,-1),
+            new Coordinate(2,0),
+            new Coordinate(3,3),
+            new Coordinate(0,2)
+    };
+        decide.NUMPOINTS = decide.POINTS.length;
+        params.E_PTS = 1;
+        params.F_PTS = 1;
+        params.AREA1 = 1;
+        params.AREA2 = 1.99;
+
+        // Executes method
+        decide.LIC14();
+
+        // Asserts that it sets CMV[14] to false
+        Assert.assertFalse(decide.CMV[14]);
+    }
+
+    /**
+     * Tests the LIC14 method that it executes correctly and sets CMV[14] to false.
+     * Two possible triangles, but both with an area greater than AREA2.
+     */
+    @Test
+    public void LIC14NegativeTest2() {
+        // Setup of parameters to use
+        setup1();
+        // Change certain parameters to test valid case
+        decide.POINTS = new Coordinate[]{
+            new Coordinate(0,0),
+            new Coordinate(-1,-1),
+            new Coordinate(2,0),
+            new Coordinate(3,3),
+            new Coordinate(0,2),
+            new Coordinate(-2,4)
+        };
+        decide.NUMPOINTS = decide.POINTS.length;
+        params.E_PTS = 1;
+        params.F_PTS = 1;
+        params.AREA1 = 1;
+        params.AREA2 = 1.99;
+
+        // Executes method
+        decide.LIC14();
+
+        // Asserts that it sets CMV[14] to false
+        Assert.assertFalse(decide.CMV[14]);
+    }
+
+
+    /**
+     * Tests the LIC14 method that it executes correctly and sets CMV[14] to false,
+     * due to too few points.
+     */
+    @Test
+    public void LIC14InvalidTest() {// Setup of parameters to use
+        setup1();
+        // Change certain parameters to test valid case
+        decide.POINTS = new Coordinate[]{
+                new Coordinate(0,0),
+                new Coordinate(-1,-1),
+                new Coordinate(2,0)
+        };
+        decide.NUMPOINTS = decide.POINTS.length; // too few points
+        params.E_PTS = 1;
+        params.F_PTS = 1;
+        params.AREA1 = 1;
+        params.AREA2 = 2;
+
+        // Executes method
+        decide.LIC14();
+
+        // Asserts that it sets CMV[14] to false
+        Assert.assertFalse(decide.CMV[14]);
+    }
+
+    /**
+     * Tests the LIC14 method that it executes correctly and sets CMV[14] to false,
+     * due to E_PTS + F_PTS > NUMPOINTS-3.
+     */
+    @Test
+    public void LIC14InvalidTest2() {
+        // Setup of parameters to use
+        setup1();
+        // Change certain parameters to test valid case
+        decide.POINTS = new Coordinate[]{
+                new Coordinate(0,0),
+                new Coordinate(-1,-1),
+                new Coordinate(2,0),
+                new Coordinate(3,3),
+                new Coordinate(0,2),
+                new Coordinate(-2,4)
+        };
+        decide.NUMPOINTS = decide.POINTS.length;
+        params.E_PTS = 4; // Too large
+        params.F_PTS = 2; // Too large
+        params.AREA1 = 1;
+        params.AREA2 = 2;
+
+        // Executes method
+        decide.LIC14();
+
+        // Asserts that it sets CMV[14] to false
+        Assert.assertFalse(decide.CMV[14]);
+    }
+
+    /**
+     * Tests the LIC14 method that it executes correctly and sets CMV[14] to false,
+     * due to AREA2 < 0.
+     */
+    @Test
+    public void LIC14InvalidTest3() {
+        // Setup of parameters to use
+        setup1();
+        // Change certain parameters to test valid case
+        decide.POINTS = new Coordinate[]{
+                new Coordinate(0,0),
+                new Coordinate(-1,-1),
+                new Coordinate(2,0),
+                new Coordinate(3,3),
+                new Coordinate(0,2),
+                new Coordinate(-2,4)
+        };
+        decide.NUMPOINTS = decide.POINTS.length;
+        params.E_PTS = 1;
+        params.F_PTS = 1;
+        params.AREA1 = 1;
+        params.AREA2 = -1;
+
+        // Executes method
+        decide.LIC14();
+
+        // Asserts that it sets CMV[14] to false
+        Assert.assertFalse(decide.CMV[14]);
+    }
+
+     /**
+     * Test that help function calculateArea is correctly executed and returns correct.
+     */
+    @Test
+    public void calculateAreaTest() {
+        setup1();
+
+        Coordinate i = new Coordinate(0,0);
+        Coordinate j = new Coordinate(0,2);
+        Coordinate k = new Coordinate(2,0);
+        // Area of these three is 2
+
+        Assert.assertEquals(2.0, decide.calculateArea(i,j,k), 0.01);
+    }
+
+    /**
+     * Test that help function threePointsAreaComparison executes correctly and returns true
+     */
+    @Test
+    public void threePointsAreaComparisonTest() {
+        setup1();
+
+        decide.POINTS = new Coordinate[]{
+                new Coordinate(0,0),
+                new Coordinate(0,2),
+                new Coordinate(2,0)
+        };
+        decide.NUMPOINTS = decide.POINTS.length;
+        // Area of these three is 2
+
+        // Should return true as 2 >= 1 and 2 <= 2
+        Assert.assertTrue(decide.threePointsAreaComparison(1, true, 0,0));
+        Assert.assertTrue(decide.threePointsAreaComparison(2, false, 0,0));
+
+        // Should return false as 2 >= 3 and 2 <= 1 is not true
+        Assert.assertFalse(decide.threePointsAreaComparison(3, true, 0,0));
+        Assert.assertFalse(decide.threePointsAreaComparison(1, false, 0,0));
     }
 }

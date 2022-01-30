@@ -112,29 +112,15 @@ public class Decide {
     *
     */
     public void LIC3(){
-        if (NUMPOINTS < 3) {
+        if (
+                (NUMPOINTS < 3)
+                || (PARAMETERS.AREA1 < 0)
+        ) {
             CMV[3] = false;
             return;
         }
-
-        for (int n = 0 ; n < NUMPOINTS-2 ; n++) {
-            // Extract the coordinates of the three consecutive data points
-            double x1 = POINTS[n].XPOS;
-            double y1 = POINTS[n].YPOS;
-            double x2 = POINTS[n+1].XPOS;
-            double y2 = POINTS[n+1].YPOS;
-            double x3 = POINTS[n+2].XPOS;
-            double y3 = POINTS[n+2].YPOS;
-
-            // Calculate the area of the three consecutive data points
-            double area = Math.abs((x1*(y2-y3)+x2*(y3-y1)+x3*(y1-y2))/2);
-
-            if (area > PARAMETERS.AREA1) {
-                CMV[3] = true;
-                return;
-            }
-        }
-        CMV[3] = false;
+        // offset and offset2 set to 0 since there are no intervening data points
+        CMV[3] = threePointsAreaComparison(PARAMETERS.AREA1, true, 0,0);
     }
 
     public void LIC5() {
@@ -251,29 +237,103 @@ public class Decide {
                 || (1 > PARAMETERS.E_PTS)
                 || (1 > PARAMETERS.F_PTS)
                 || (PARAMETERS.E_PTS + PARAMETERS.E_PTS > NUMPOINTS-3)
+                || (PARAMETERS.AREA1 < 0)
         ) {
             CMV[10] = false;
             return;
         }
 
-        for (int n = 0 ; n < NUMPOINTS-2-PARAMETERS.E_PTS-PARAMETERS.F_PTS ; n++) {
-            // Extract the coordinates of the three data points
-            double x1 = POINTS[n].XPOS;
-            double y1 = POINTS[n].YPOS;
-            double x2 = POINTS[n+1+PARAMETERS.E_PTS].XPOS;
-            double y2 = POINTS[n+1+PARAMETERS.E_PTS].YPOS;
-            double x3 = POINTS[n+2+PARAMETERS.E_PTS+PARAMETERS.F_PTS].XPOS;
-            double y3 = POINTS[n+2+PARAMETERS.E_PTS+PARAMETERS.F_PTS].YPOS;
+        CMV[10] = threePointsAreaComparison(PARAMETERS.AREA1, true, PARAMETERS.E_PTS, PARAMETERS.F_PTS);
+    }
 
-            // Calculate the area of the three data points
-            double area = Math.abs((x1*(y2-y3)+x2*(y3-y1)+x3*(y1-y2))/2);
+    /**
+     * LIC 14 is:
+     * There exists at least one set of three data points, separated by exactly E_PTS and F_PTS
+     * consecutive intervening points, respectively, that are the vertices of a triangle with area
+     * greater than AREA1. In addition, there exist three data points (which can be the same or
+     * different from the three data points just mentioned) separated by exactly E_PTS and F_PTS
+     * consecutive intervening points, respectively, that are the vertices of a triangle with area
+     * less than AREA2. Both parts must be true for the LIC to be true.
+     * The condition is not met when NUMPOINTS < 5.
+     * 0 ≤ AREA2
+     */
+    public void LIC14() {
+        if (
+                (NUMPOINTS < 5)
+                || (1 > PARAMETERS.E_PTS)
+                || (1 > PARAMETERS.F_PTS)
+                || (PARAMETERS.E_PTS + PARAMETERS.E_PTS > NUMPOINTS-3)
+                || (PARAMETERS.AREA1 < 0)
+                || (PARAMETERS.AREA2 < 0)
+        ) {
+            CMV[14] = false;
+            return;
+        }
 
-            if (area > PARAMETERS.AREA1) {
-                CMV[10] = true;
-                return;
+        boolean area2Greater = false;
+
+        boolean area1Greater = threePointsAreaComparison(PARAMETERS.AREA1, true, PARAMETERS.E_PTS, PARAMETERS.F_PTS);
+
+        if (area1Greater) {
+            area2Greater = threePointsAreaComparison(PARAMETERS.AREA2, false, PARAMETERS.E_PTS, PARAMETERS.F_PTS);
+        }
+        // Set to true only if both conditions are true
+        CMV[14] = area1Greater && area2Greater;
+    }
+
+    /**
+     * Help function that finds three consecutive points and tests if their area is greater than the input area
+     *
+     * @param area Area to be compared against
+     * @param shouldBeGreater A boolean to know if the thisArea should be greater or less than input area
+     * @param offset Number of points that should be intervening the first and second point in the triangle
+     * @param offset2 Number of points that should be intervening the second and third point in the triangle
+     * @return True if an area is found that is greater than "area"
+     */
+    protected boolean threePointsAreaComparison(double area, boolean shouldBeGreater, int offset, int offset2) {
+        for (int n = 0 ; n < NUMPOINTS-2-offset-offset2 ; n++) {
+            double thisArea = calculateArea(
+                    POINTS[n],
+                    POINTS[n+1+offset],
+                    POINTS[n+2+offset+offset2]
+            );
+
+            System.out.println("area: " + area);
+            System.out.println("ThisArea: " + thisArea);
+
+            // If-condition to know if thisArea should be greater or less than area
+            if (shouldBeGreater) {
+                if (thisArea >= area) {
+                    return true;
+                }
+            } else {
+                if (thisArea <= area) {
+                    return true;
+                }
             }
         }
-        CMV[10] = false;
+        return false;
+    }
+
+    /**
+     * Takes in three coordinates and calculates the area between them
+     *
+     * @param i The first Coordinate
+     * @param j The second Coordinate
+     * @param k The third Coordinate
+     * @return The area of the three Coordinates
+     */
+    protected double calculateArea(Coordinate i, Coordinate j, Coordinate k) {
+        // Extract the coordinates of the three data points
+        double x1 = i.XPOS;
+        double y1 = i.YPOS;
+        double x2 = j.XPOS;
+        double y2 = j.YPOS;
+        double x3 = k.XPOS;
+        double y3 = k.YPOS;
+
+        // Calculate the area of the three data points and returns it
+        return Math.abs((x1*(y2-y3)+x2*(y3-y1)+x3*(y1-y2))/2);
     }
 
      /**
