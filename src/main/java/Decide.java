@@ -33,16 +33,6 @@ public class Decide {
     }
 
 
-    public void LIC5() {
-        for (int i = 1; i < NUMPOINTS; i++) {
-            double diff = POINTS[i].XPOS - POINTS[i-1].XPOS;
-            if (diff < 0) {
-                CMV[5] = true;
-            }
-        }
-    }
-
-
     /*
     * Implementation of LIC2: There exists at least one set of three consecutive data points which form an angle such that: angle < (PI − EPSILON)
     * or angle > (PI + EPSILON). The second of the three consecutive points is always the vertex of the angle. If either the first point or the 
@@ -155,7 +145,8 @@ public class Decide {
             }
         }
     }
-
+    
+    
     /**
      * LIC 7 is:
      * There exists at least one set of two data points separated by exactly K_PTS consecutive
