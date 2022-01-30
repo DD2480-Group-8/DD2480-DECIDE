@@ -191,7 +191,7 @@ public class Decide {
      * not satisfied by those three points. When NUMPOINTS < 5, the condition is not met.
      */
     public void LIC9(){
-        if(NUMPOINTS < 5 || POINTS.length > 5){
+        if(NUMPOINTS < 5 || POINTS.length < 5){
             CMV[9] = false;
             return;
         }
