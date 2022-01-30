@@ -170,24 +170,16 @@ public class Decide {
                 Coordinate point = POINTS[i-j];
                 // 1st quadrant
                 if (point.XPOS >= 0 && point.YPOS >= 0) {
-                    if (quadrants[0] == 0) {
-                        quadrants[0] = 1;
-                    }
+                    quadrants[0] = 1;
                 // 2nd quadrant
                 } else if (point.XPOS < 0 && point.YPOS >= 0) {
-                    if (quadrants[1] == 0) {
-                        quadrants[1] = 1;
-                    }
+                    quadrants[1] = 1;
                 // 3rd quadrant
                 } else if (point.XPOS <= 0 && point.YPOS < 0) {
-                    if (quadrants[2] == 0) {
-                        quadrants[2] = 1;
-                    }
+                    quadrants[2] = 1;
                 // 4th quadrant
                 } else {
-                    if (quadrants[3] == 0) {
-                        quadrants[3] = 1;
-                    }
+                    quadrants[3] = 1;
                 }
             }
 
