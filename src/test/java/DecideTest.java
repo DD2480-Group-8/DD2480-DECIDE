@@ -320,7 +320,7 @@ public class DecideTest {
     * Tests a negative case for the LIC 9 function.
     */
     @Test
-    public void LIC9NegativeTest() {
+    public void LIC9NegativeTest1() {
         setup1();
         decide.NUMPOINTS = 5;
         decide.PARAMETERS.EPSILON = Math.PI*7/8;
@@ -334,21 +334,46 @@ public class DecideTest {
         decide.LIC9();
         Assert.assertFalse(decide.CMV[9]);
     }
+    
+    /*
+    * Tests a negative case for the LIC 9 function where one point is equal to a corresponding angle vertex.
+    */
+    @Test
+    public void LIC9NegativeTest2() {
+        setup1();
+        decide.NUMPOINTS = 6;
+        decide.PARAMETERS.EPSILON = Math.PI*7/8;
+        decide.POINTS = new Coordinate[] {
+            new Coordinate(1, 1),
+            new Coordinate(0, 0),
+            new Coordinate(0, 0),
+            new Coordinate(0, 0),
+            new Coordinate(1, 0),
+            new Coordinate(-1, 0),
+        };
+        decide.LIC9();
+        Assert.assertFalse(decide.CMV[9]);
+    }
 
     /*
     * Tests a positive case for the LIC 9 function.
     */
     @Test
-    public void LIC9PositiveTest() {
+    public void LIC9PositiveTest1() {
         setup1();
         decide.POINTS = new Coordinate[] {
             new Coordinate(0, 2),
             new Coordinate(0, 0),
             new Coordinate(0, 3),
             new Coordinate(0, 0),
-            new Coordinate(1, 3)
+            new Coordinate(1, 3),
+            new Coordinate(0, 0),
+            new Coordinate(0, 0),
+            new Coordinate(0, 0),
+            new Coordinate(0, 0),
+            new Coordinate(0, 0)
         };
-        decide.NUMPOINTS = 5;
+        decide.NUMPOINTS = 10;
         decide.PARAMETERS.EPSILON = Math.PI/2 -0.1; 
 
         decide.LIC9();
