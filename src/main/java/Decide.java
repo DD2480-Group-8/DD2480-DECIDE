@@ -167,6 +167,34 @@ public class Decide {
         }
         CMV[7] = false;
     }
+
+    /**
+     * LIC 9 is:
+     * There exists at least one set of three data points separated by exactly C PTS and D PTS consecutive 
+     * intervening points, respectively, that form an angle such that: angle < (PI − EPSILON) or angle > (PI + EPSILON)
+     * The second point of the set of three points is always the vertex of the angle. If either the first 
+     * point or the last point (or both) coincide with the vertex, the angle is undefined and the LIC is 
+     * not satisfied by those three points. When NUMPOINTS < 5, the condition is not met.
+     */
+    public void LIC9(){
+        if(NUMPOINTS < 5 || POINTS.length < 5){
+            CMV[9] = false;
+            return;
+        }
+        for(int i = 0; i < NUMPOINTS-PARAMETERS.C_PTS-PARAMETERS.D_PTS-2; i++){
+            double angle = checkAngle(
+                    POINTS[i], 
+                    POINTS[i+PARAMETERS.C_PTS+1], 
+                    POINTS[i+PARAMETERS.C_PTS+PARAMETERS.D_PTS+2]
+            );
+            if( angle > Math.PI + PARAMETERS.EPSILON || angle < Math.PI - PARAMETERS.EPSILON){
+                CMV[9] = true;
+                return;
+            }
+        }
+        CMV[9] = false;
+    }
+
   
     /**
      * LIC 10 is:
@@ -275,5 +303,38 @@ public class Decide {
 
         // Calculate the area of the three data points and returns it
         return Math.abs((x1*(y2-y3)+x2*(y3-y1)+x3*(y1-y2))/2);
+    }
+
+    /**
+     * LIC 11 is:
+     * There exists at least one set of two data points, (X[i],Y[i]) and (X[j],Y[j]),
+     * separated by exactly G_PTS consecutive intervening points, such that X[j] - X[i] < 0.
+     * (where i < j ) The condition is not met when NUMPOINTS < 3.
+     * 1 ≤ G_PTS ≤ NUMPOINTS−2
+     */
+    public void LIC11() {
+        if (
+                (NUMPOINTS < 3)
+                || (PARAMETERS.G_PTS < 1)
+                || (PARAMETERS.G_PTS > NUMPOINTS-2)
+        ) {
+           CMV[11] = false;
+           return;
+        }
+
+        // Search after data points separated by G_PTS number of points
+        for (int i = 0 ; i < NUMPOINTS-PARAMETERS.G_PTS-1 ; i++) {
+            // Extract XPOS for the ith and jth points
+            double x_i = POINTS[i].XPOS;
+            int j = i + PARAMETERS.G_PTS + 1;
+            double x_j = POINTS[j].XPOS;
+
+            // Does X[j] - X[i] < 0 hold
+            if (x_j - x_i < 0) {
+                CMV[11] = true;
+                return;
+            }
+        }
+        CMV[11] = false;
     }
 }   
