@@ -250,6 +250,71 @@ public class Decide {
         CMV[10] = false;
     }
 
+     /**
+     LIC 6 is:
+     There exists at least one set of N PTS consecutive data points such that at least one of the
+     points lies a distance greater than DIST from the line joining the first and last of these N PTS
+     points. If the first and last points of these N PTS are identical, then the calculated distance
+     to compare with DIST will be the distance from the coincident point to all other points of
+     the N PTS consecutive points. The condition is not met when NUMPOINTS < 3.
+     (3 < N PTS < NUMPOINTS), (0 < DIST)
+     */
+    public void LIC6() {
+        if (NUMPOINTS < 3 || PARAMETERS.N_PTS < 3 || PARAMETERS.DIST <= 0) {
+            CMV[6] = false;
+            return;
+        }
+        double dis;
+        boolean same;
+        for (int i = 0; i < NUMPOINTS - PARAMETERS.N_PTS + 1; i++) {
+            double[] AB = new double[2];
+            same = false;
+            //check if [i]th and [i+N_PTS]th coordinate are the same
+            if (POINTS[i + PARAMETERS.N_PTS - 1].XPOS == POINTS[i].XPOS
+                    && POINTS[i + PARAMETERS.N_PTS - 1].YPOS == POINTS[i].YPOS) {
+                same = true;
+            }
+            // form vector AB between the [i]th and [i+N_PTS]th coordinate.
+            else {
+                AB[0] = POINTS[i + PARAMETERS.N_PTS - 1].XPOS - POINTS[i].XPOS;
+                AB[1] = POINTS[i + PARAMETERS.N_PTS - 1].YPOS - POINTS[i].YPOS;
+            }
+            int j = i + 1;
+            while (j < i + PARAMETERS.N_PTS - 1) {
+                // case if points are same
+                if (same) {
+                    double x1 = POINTS[i].XPOS;
+                    double y1 = POINTS[i].YPOS;
+                    double x2 = POINTS[j].XPOS;
+                    double y2 = POINTS[j].YPOS;
+                    dis = Math.sqrt((y2 - y1) * (y2 - y1) + (x2 - x1) * (x2 - x1));
+                }
+                // vector AP between the [i]th and [j]th coordinate.
+                else {
+                    double[] AP = new double[2];
+                    AP[0] = POINTS[j].XPOS - POINTS[i].XPOS;
+                    AP[1] = POINTS[j].YPOS - POINTS[i].YPOS;
+
+                    // Finding the perpendicular distance using |(AB X AP)/|AB||
+                    double x1 = AB[0];
+                    double y1 = AB[1];
+                    double x2 = AP[0];
+                    double y2 = AP[1];
+                    double mod = Math.sqrt(x1 * x1 + y1 * y1);
+                    dis = Math.abs(x1 * y2 - y1 * x2) / mod;
+                }
+                //check if within DIST
+                if (dis > PARAMETERS.DIST) {
+                    CMV[6] = true;
+                    return;
+                }
+                j++;
+            }
+        }
+        CMV[6] = false;
+    }
+
+
     /**
      * LIC 11 is:
      * There exists at least one set of two data points, (X[i],Y[i]) and (X[j],Y[j]),
