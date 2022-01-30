@@ -761,8 +761,9 @@ public class DecideTest {
         // Should return false as 2 >= 3 and 2 <= 1 is not true
         Assert.assertFalse(decide.threePointsAreaComparison(3, true, 0,0));
         Assert.assertFalse(decide.threePointsAreaComparison(1, false, 0,0));
+    }
     
-      /**
+    /**
      * Tests the LIC11 method that it executes correctly and sets CMV[11] to true
      */
     @Test
