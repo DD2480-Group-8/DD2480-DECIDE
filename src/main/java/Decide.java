@@ -183,6 +183,34 @@ public class Decide {
     }
 
     /**
+     * LIC 8 is:
+     * There exists at least one set of three data points separated by exactly A PTS and B PTS consecutive intervening points, respectively,
+     * that cannot be contained within or on a circle of radius RADIUS1. The condition is not met when NUMPOINTS < 5.
+     * 1≤A PTS,1≤B PTS
+     * A PTS+B PTS ≤ (NUMPOINTS−3)
+     */
+    public void LIC8() {
+        if (NUMPOINTS >= 5) {
+            for (int i = 0; i < NUMPOINTS - PARAMETERS.A_PTS - PARAMETERS.B_PTS; i++) {
+                // Find the centroid.
+                Coordinate centroid = new Coordinate(
+                        (POINTS[i].XPOS + POINTS[i+PARAMETERS.A_PTS].XPOS + POINTS[i+PARAMETERS.B_PTS].XPOS) / 3,
+                        (POINTS[i].YPOS + POINTS[i+PARAMETERS.A_PTS].YPOS + POINTS[i+PARAMETERS.B_PTS].YPOS) / 3
+                );
+                // Check if any of the points have a distance to the centroid larger than the radius.
+                if (
+                        (Math.sqrt(Math.pow(POINTS[i].XPOS - centroid.XPOS, 2) + Math.pow(POINTS[i].YPOS - centroid.YPOS, 2)) > PARAMETERS.RADIUS1)
+                                || (Math.sqrt(Math.pow(POINTS[i+PARAMETERS.A_PTS].XPOS - centroid.XPOS, 2) + Math.pow(POINTS[i+PARAMETERS.A_PTS].YPOS - centroid.YPOS, 2)) > PARAMETERS.RADIUS1)
+                                || (Math.sqrt(Math.pow(POINTS[i+PARAMETERS.B_PTS].XPOS - centroid.XPOS, 2) + Math.pow(POINTS[i+PARAMETERS.B_PTS].YPOS - centroid.YPOS, 2)) > PARAMETERS.RADIUS1)
+                ) {
+                    CMV[8] = true;
+                    break; // only need one set of points to fulfill this, no need to continue the loop.
+                }
+            }
+        }
+    }
+
+    /**
      * LIC 9 is:
      * There exists at least one set of three data points separated by exactly C PTS and D PTS consecutive 
      * intervening points, respectively, that form an angle such that: angle < (PI − EPSILON) or angle > (PI + EPSILON)
