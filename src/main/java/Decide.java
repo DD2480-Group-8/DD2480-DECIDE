@@ -169,6 +169,34 @@ public class Decide {
     }
 
     /**
+     * LIC 8 is:
+     * There exists at least one set of three data points separated by exactly A PTS and B PTS consecutive intervening points, respectively,
+     * that cannot be contained within or on a circle of radius RADIUS1. The condition is not met when NUMPOINTS < 5.
+     * 1≤A PTS,1≤B PTS
+     * A PTS+B PTS ≤ (NUMPOINTS−3)
+     */
+    public void LIC8() {
+        if (NUMPOINTS >= 5) {
+            for (int i = 0; i < NUMPOINTS - PARAMETERS.A_PTS - PARAMETERS.B_PTS; i++) {
+                // Find the centroid.
+                Coordinate centroid = new Coordinate(
+                        (POINTS[i].XPOS + POINTS[i+PARAMETERS.A_PTS].XPOS + POINTS[i+PARAMETERS.B_PTS].XPOS) / 3,
+                        (POINTS[i].YPOS + POINTS[i+PARAMETERS.A_PTS].YPOS + POINTS[i+PARAMETERS.B_PTS].YPOS) / 3
+                );
+                // Check if any of the points have a distance to the centroid larger than the radius.
+                if (
+                        (Math.sqrt(Math.pow(POINTS[i].XPOS - centroid.XPOS, 2) + Math.pow(POINTS[i].YPOS - centroid.YPOS, 2)) > PARAMETERS.RADIUS1)
+                                || (Math.sqrt(Math.pow(POINTS[i+PARAMETERS.A_PTS].XPOS - centroid.XPOS, 2) + Math.pow(POINTS[i+PARAMETERS.A_PTS].YPOS - centroid.YPOS, 2)) > PARAMETERS.RADIUS1)
+                                || (Math.sqrt(Math.pow(POINTS[i+PARAMETERS.B_PTS].XPOS - centroid.XPOS, 2) + Math.pow(POINTS[i+PARAMETERS.B_PTS].YPOS - centroid.YPOS, 2)) > PARAMETERS.RADIUS1)
+                ) {
+                    CMV[8] = true;
+                    break; // only need one set of points to fulfill this, no need to continue the loop.
+                }
+            }
+        }
+    }
+
+    /**
      * LIC 9 is:
      * There exists at least one set of three data points separated by exactly C PTS and D PTS consecutive 
      * intervening points, respectively, that form an angle such that: angle < (PI − EPSILON) or angle > (PI + EPSILON)
@@ -304,6 +332,71 @@ public class Decide {
         // Calculate the area of the three data points and returns it
         return Math.abs((x1*(y2-y3)+x2*(y3-y1)+x3*(y1-y2))/2);
     }
+
+     /**
+     LIC 6 is:
+     There exists at least one set of N PTS consecutive data points such that at least one of the
+     points lies a distance greater than DIST from the line joining the first and last of these N PTS
+     points. If the first and last points of these N PTS are identical, then the calculated distance
+     to compare with DIST will be the distance from the coincident point to all other points of
+     the N PTS consecutive points. The condition is not met when NUMPOINTS < 3.
+     (3 < N PTS < NUMPOINTS), (0 < DIST)
+     */
+    public void LIC6() {
+        if (NUMPOINTS < 3 || PARAMETERS.N_PTS < 3 || PARAMETERS.DIST <= 0) {
+            CMV[6] = false;
+            return;
+        }
+        double dis;
+        boolean same;
+        for (int i = 0; i < NUMPOINTS - PARAMETERS.N_PTS + 1; i++) {
+            double[] AB = new double[2];
+            same = false;
+            //check if [i]th and [i+N_PTS]th coordinate are the same
+            if (POINTS[i + PARAMETERS.N_PTS - 1].XPOS == POINTS[i].XPOS
+                    && POINTS[i + PARAMETERS.N_PTS - 1].YPOS == POINTS[i].YPOS) {
+                same = true;
+            }
+            // form vector AB between the [i]th and [i+N_PTS]th coordinate.
+            else {
+                AB[0] = POINTS[i + PARAMETERS.N_PTS - 1].XPOS - POINTS[i].XPOS;
+                AB[1] = POINTS[i + PARAMETERS.N_PTS - 1].YPOS - POINTS[i].YPOS;
+            }
+            int j = i + 1;
+            while (j < i + PARAMETERS.N_PTS - 1) {
+                // case if points are same
+                if (same) {
+                    double x1 = POINTS[i].XPOS;
+                    double y1 = POINTS[i].YPOS;
+                    double x2 = POINTS[j].XPOS;
+                    double y2 = POINTS[j].YPOS;
+                    dis = Math.sqrt((y2 - y1) * (y2 - y1) + (x2 - x1) * (x2 - x1));
+                }
+                // vector AP between the [i]th and [j]th coordinate.
+                else {
+                    double[] AP = new double[2];
+                    AP[0] = POINTS[j].XPOS - POINTS[i].XPOS;
+                    AP[1] = POINTS[j].YPOS - POINTS[i].YPOS;
+
+                    // Finding the perpendicular distance using |(AB X AP)/|AB||
+                    double x1 = AB[0];
+                    double y1 = AB[1];
+                    double x2 = AP[0];
+                    double y2 = AP[1];
+                    double mod = Math.sqrt(x1 * x1 + y1 * y1);
+                    dis = Math.abs(x1 * y2 - y1 * x2) / mod;
+                }
+                //check if within DIST
+                if (dis > PARAMETERS.DIST) {
+                    CMV[6] = true;
+                    return;
+                }
+                j++;
+            }
+        }
+        CMV[6] = false;
+    }
+
 
     /**
      * LIC 11 is:
