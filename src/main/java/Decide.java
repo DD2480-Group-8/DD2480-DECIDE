@@ -1,3 +1,5 @@
+import java.util.Arrays;
+
 public class Decide {
 
     enum CONNECTORS {
@@ -279,5 +281,60 @@ public class Decide {
             }
         }
         CMV[11] = false;
+    }
+
+    /**
+     * LIC12 implements:
+     * There exists at least one set of two data points, separated by exactly K PTS consecutive intervening points,
+     * which are a distance greater than the length, LENGTH1, apart. In addition,
+     * there exists at least one set of two data points (which can be the same or different from the two data points just mentioned),
+     * separated by exactly K PTS consecutive intervening points, that are a distance less than the length, LENGTH2, apart.
+     * Both parts must be true for the LIC to be true.
+     * The condition is not met when NUMPOINTS < 3.
+     * 0 ≤ LENGTH2
+     */
+    public void LIC12() {
+        // Check input conditions
+        if (
+                (NUMPOINTS < 3)
+                || (PARAMETERS.LENGTH1 < 0) // I'm assuming a length cannot be negative.
+                || (PARAMETERS.LENGTH2 < 0)
+                || (PARAMETERS.K_PTS < 0) // we have to have 2 endpoints and at least k points in between.
+        ) {
+            CMV[12] = false;
+            return;
+        }
+
+        // We have two conditions that have to be true for the LIC, flip their corresponding bit once they are fulfilled.
+        int[] conditions = new int[]{ 0, 0 };
+        // + 1 and -1 for the start-and endpoint since we have to have K_PTS _between_ them.
+        for (int i = PARAMETERS.K_PTS + 1; i < NUMPOINTS; i++) {
+            Coordinate endpoint = POINTS[i];
+            Coordinate startpoint = POINTS[i - PARAMETERS.K_PTS - 1];
+
+            // Get the distance between the two coordinates
+            double distance = Math.sqrt(Math.pow(endpoint.XPOS - startpoint.XPOS, 2) + Math.pow(endpoint.YPOS - startpoint.YPOS, 2));
+
+            // Condition 1: which are a distance greater than the length, LENGTH1, apart.
+            if (distance > PARAMETERS.LENGTH1) {
+                if (conditions[0] == 0) {
+                    conditions[0] = 1;
+                }
+            }
+
+            // Condition 2: that are a distance less than the length, LENGTH2, apart. Can be the same points that fulfilled condition 1.
+            if (distance < PARAMETERS.LENGTH2) {
+                if (conditions[1] == 0) {
+                    conditions[1] = 1;
+                }
+            }
+
+            // If both conditions are fulfilled, set CMV[12] to true.
+            if (Arrays.stream(conditions).sum() == 2) {
+                CMV[12] = true;
+                return;
+            }
+
+        }
     }
 }   
