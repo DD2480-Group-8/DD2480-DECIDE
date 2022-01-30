@@ -1223,4 +1223,90 @@ public class DecideTest {
         Assert.assertFalse(decide.threePointsAreaComparison(3, true, 0,0));
         Assert.assertFalse(decide.threePointsAreaComparison(1, false, 0,0));
     }
+
+    @Test
+    public void LIC12TestTrue() {
+        // Setup of parameters to use
+        setup1();
+
+        // Set the points to be on a straight line. Necessary parameters are length1, length2, and K_PTS.
+        decide.POINTS = new Coordinate[]{
+                new Coordinate(0,0),
+                new Coordinate(1,0),
+                new Coordinate(2,0),
+                new Coordinate(3,0),
+                new Coordinate(4,0)
+        };
+        decide.NUMPOINTS = decide.POINTS.length;
+        params.LENGTH1 = 2;
+        params.LENGTH2 = 5;
+        params.K_PTS = 2;
+
+        // Executes method
+        decide.LIC12();
+        Assert.assertTrue(decide.CMV[12]);
+    }
+
+    @Test
+    public void LIC12TestFalse() {
+        // Setup of parameters to use
+        setup1();
+
+        // Set the points to be on a straight line. Necessary parameters are length1, length2, and K_PTS.
+        decide.POINTS = new Coordinate[]{
+                new Coordinate(0,0),
+                new Coordinate(1,0),
+                new Coordinate(2,0),
+                new Coordinate(3,0),
+                new Coordinate(4,0)
+        };
+        decide.NUMPOINTS = decide.POINTS.length;
+        params.LENGTH1 = 7; // set to 7 since we don't have any distance that long.
+        params.LENGTH2 = 5; // set to 5 since we have distances shorter than that.
+        params.K_PTS = 1; // 1 pt between them.
+
+        // Executes method
+        decide.LIC12();
+        Assert.assertFalse(decide.CMV[12]);
+    }
+
+    @Test
+    public void LIC12InvalidInputs() {
+        // Setup of parameters to use
+        setup1();
+
+        // Set the points to be on a straight line. Necessary parameters are length1, length2, and K_PTS.
+        decide.POINTS = new Coordinate[]{
+                new Coordinate(0,0),
+                new Coordinate(1,0),
+                new Coordinate(2,0),
+                new Coordinate(3,0),
+                new Coordinate(4,0)
+        };
+        decide.NUMPOINTS = decide.POINTS.length;
+        params.LENGTH1 = 2; // set to 7 since we don't have any distance that long.
+        params.LENGTH2 = 5; // set to 5 since we have distances shorter than that.
+
+        params.K_PTS = -1; // Test negative k_pts.
+        decide.LIC12();
+        Assert.assertFalse(decide.CMV[12]);
+
+        params.K_PTS = 2; // Reset k_pts.
+        params.LENGTH1 = -2; // Test negative Length1.
+        decide.LIC12();
+        Assert.assertFalse(decide.CMV[12]);
+
+        params.LENGTH1 = 2; // reset Length1.
+        params.LENGTH2 = -2; // Test negative Length1.
+        decide.LIC12();
+        Assert.assertFalse(decide.CMV[12]);
+
+        decide.POINTS = new Coordinate[]{
+                new Coordinate(0,0),
+                new Coordinate(1,0),
+        }; // Test less than 3 points.
+        decide.LIC12();
+        Assert.assertFalse(decide.CMV[12]);
+
+    }
 }
