@@ -111,6 +111,70 @@ public class DecideTest {
         Assert.assertTrue(decide.CMV[1]);
     }
 
+    /*
+    * Tests a negative case for the LIC2 function.
+    */
+    @Test
+    public void LIC2TestFalse() {
+        setup1();
+        decide.NUMPOINTS = 3;
+        decide.PARAMETERS.EPSILON = Math.PI*7/8;
+        decide.POINTS = new Coordinate[] {
+            new Coordinate(1, 1),
+            new Coordinate(0, 0),
+            new Coordinate(1, 0)
+        };
+        decide.LIC2();
+        Assert.assertFalse(decide.CMV[2]);
+    }
+
+    /*
+    * Tests a positive case for the LIC2 function.
+    */
+    @Test
+    public void LIC2TestTrue() {
+        setup1();
+        decide.POINTS = new Coordinate[] {
+            new Coordinate(0, 2),
+            new Coordinate(0, 3),
+            new Coordinate(1, 3)
+        };
+        decide.NUMPOINTS = 3;
+        decide.PARAMETERS.EPSILON = Math.PI/2 -0.1; 
+
+        decide.LIC2();
+        Assert.assertTrue(decide.CMV[2]);
+    }
+
+    /*
+    * Tests the Coordinate angle checking helper function.
+    */
+    @Test
+    public void checkAngleTest() {
+        setup1();
+        Coordinate c1 = new Coordinate(1,0);
+        Coordinate c2 = new Coordinate(0,0);
+        Coordinate c3 = new Coordinate(1,1);
+        
+        Assert.assertEquals(decide.checkAngle(c1, c2, c3), Math.PI/4, 0.001);
+    }
+
+    /*
+    * Tests the Coordinate subtraction helper function.
+    */
+    @Test
+    public void coordSubtractTest() {
+        setup1();
+        Coordinate c1 = new Coordinate(1,3);
+        Coordinate c2 = new Coordinate(5,-4);
+
+        Coordinate c3 = new Coordinate(-4,7);
+        Coordinate res = decide.coordSubtract(c1,c2);
+        
+        Assert.assertEquals(c3.XPOS, res.XPOS, 0.001);
+        Assert.assertEquals(c3.YPOS, res.YPOS, 0.001);
+    }
+
     /**
      * Tests the LIC3 method that it executes correctly and sets CMV[3] to true.
      */
@@ -128,7 +192,7 @@ public class DecideTest {
         Assert.assertTrue(decide.CMV[3]);
     }
 
-    /**
+    /*
      * Tests the LIC3 method that it executes correctly and sets CMV[3] to false,
      * due to the area being too small.
      */
