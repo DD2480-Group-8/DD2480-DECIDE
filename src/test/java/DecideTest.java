@@ -345,7 +345,7 @@ public class DecideTest {
     }
 
     /**
-     * Tests the LIC8 method that it executes correctly and sets CMV[8] to false.
+     * Tests the LIC8 method that it executes correctly and sets CMV[8] to true.
      */
     @Test
     public void LIC8ValidTest() {
