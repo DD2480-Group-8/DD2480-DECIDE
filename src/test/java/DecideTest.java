@@ -521,7 +521,6 @@ public class DecideTest {
 
     }
 
-
     /**
      * Tests the LIC6 method that it executes correctly and sets CMV[6] to true.
      */
@@ -698,7 +697,6 @@ public class DecideTest {
         // Asserts that it sets CMV[6] to true
         Assert.assertFalse(decide.CMV[6]);
     }
-
 
     /**
      * Tests the LIC11 method that it executes correctly and sets CMV[11] to true
