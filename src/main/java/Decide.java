@@ -219,4 +219,37 @@ public class Decide {
         }
         CMV[10] = false;
     }
+
+    /**
+     * LIC 11 is:
+     * There exists at least one set of two data points, (X[i],Y[i]) and (X[j],Y[j]),
+     * separated by exactly G_PTS consecutive intervening points, such that X[j] - X[i] < 0.
+     * (where i < j ) The condition is not met when NUMPOINTS < 3.
+     * 1 ≤ G_PTS ≤ NUMPOINTS−2
+     */
+    public void LIC11() {
+        if (
+                (NUMPOINTS < 3)
+                || (PARAMETERS.G_PTS < 1)
+                || (PARAMETERS.G_PTS > NUMPOINTS-2)
+        ) {
+           CMV[11] = false;
+           return;
+        }
+
+        // Search after data points separated by G_PTS number of points
+        for (int i = 0 ; i < NUMPOINTS-PARAMETERS.G_PTS-1 ; i++) {
+            // Extract XPOS for the ith and jth points
+            double x_i = POINTS[i].XPOS;
+            int j = i + PARAMETERS.G_PTS + 1;
+            double x_j = POINTS[j].XPOS;
+
+            // Does X[j] - X[i] < 0 hold
+            if (x_j - x_i < 0) {
+                CMV[11] = true;
+                return;
+            }
+        }
+        CMV[11] = false;
+    }
 }   
