@@ -382,16 +382,12 @@ public class Decide {
 
             // Condition 1: which are a distance greater than the length, LENGTH1, apart.
             if (distance > PARAMETERS.LENGTH1) {
-                if (conditions[0] == 0) {
                     conditions[0] = 1;
-                }
             }
 
             // Condition 2: that are a distance less than the length, LENGTH2, apart. Can be the same points that fulfilled condition 1.
             if (distance < PARAMETERS.LENGTH2) {
-                if (conditions[1] == 0) {
                     conditions[1] = 1;
-                }
             }
 
             // If both conditions are fulfilled, set CMV[12] to true.
