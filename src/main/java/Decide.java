@@ -211,6 +211,34 @@ public class Decide {
     }
 
     /**
+     * LIC 9 is:
+     * There exists at least one set of three data points separated by exactly C PTS and D PTS consecutive 
+     * intervening points, respectively, that form an angle such that: angle < (PI − EPSILON) or angle > (PI + EPSILON)
+     * The second point of the set of three points is always the vertex of the angle. If either the first 
+     * point or the last point (or both) coincide with the vertex, the angle is undefined and the LIC is 
+     * not satisfied by those three points. When NUMPOINTS < 5, the condition is not met.
+     */
+    public void LIC9(){
+        if(NUMPOINTS < 5 || POINTS.length < 5){
+            CMV[9] = false;
+            return;
+        }
+        for(int i = 0; i < NUMPOINTS-PARAMETERS.C_PTS-PARAMETERS.D_PTS-2; i++){
+            double angle = checkAngle(
+                    POINTS[i], 
+                    POINTS[i+PARAMETERS.C_PTS+1], 
+                    POINTS[i+PARAMETERS.C_PTS+PARAMETERS.D_PTS+2]
+            );
+            if( angle > Math.PI + PARAMETERS.EPSILON || angle < Math.PI - PARAMETERS.EPSILON){
+                CMV[9] = true;
+                return;
+            }
+        }
+        CMV[9] = false;
+    }
+
+  
+    /**
      * LIC 10 is:
      * There exists at least one set of three data points separated by exactly E_PTS and F_PTS consecutive
      * intervening points, respectively, that are the vertices of a triangle with area greater than AREA1.
@@ -246,5 +274,103 @@ public class Decide {
             }
         }
         CMV[10] = false;
+    }
+
+     /**
+     LIC 6 is:
+     There exists at least one set of N PTS consecutive data points such that at least one of the
+     points lies a distance greater than DIST from the line joining the first and last of these N PTS
+     points. If the first and last points of these N PTS are identical, then the calculated distance
+     to compare with DIST will be the distance from the coincident point to all other points of
+     the N PTS consecutive points. The condition is not met when NUMPOINTS < 3.
+     (3 < N PTS < NUMPOINTS), (0 < DIST)
+     */
+    public void LIC6() {
+        if (NUMPOINTS < 3 || PARAMETERS.N_PTS < 3 || PARAMETERS.DIST <= 0) {
+            CMV[6] = false;
+            return;
+        }
+        double dis;
+        boolean same;
+        for (int i = 0; i < NUMPOINTS - PARAMETERS.N_PTS + 1; i++) {
+            double[] AB = new double[2];
+            same = false;
+            //check if [i]th and [i+N_PTS]th coordinate are the same
+            if (POINTS[i + PARAMETERS.N_PTS - 1].XPOS == POINTS[i].XPOS
+                    && POINTS[i + PARAMETERS.N_PTS - 1].YPOS == POINTS[i].YPOS) {
+                same = true;
+            }
+            // form vector AB between the [i]th and [i+N_PTS]th coordinate.
+            else {
+                AB[0] = POINTS[i + PARAMETERS.N_PTS - 1].XPOS - POINTS[i].XPOS;
+                AB[1] = POINTS[i + PARAMETERS.N_PTS - 1].YPOS - POINTS[i].YPOS;
+            }
+            int j = i + 1;
+            while (j < i + PARAMETERS.N_PTS - 1) {
+                // case if points are same
+                if (same) {
+                    double x1 = POINTS[i].XPOS;
+                    double y1 = POINTS[i].YPOS;
+                    double x2 = POINTS[j].XPOS;
+                    double y2 = POINTS[j].YPOS;
+                    dis = Math.sqrt((y2 - y1) * (y2 - y1) + (x2 - x1) * (x2 - x1));
+                }
+                // vector AP between the [i]th and [j]th coordinate.
+                else {
+                    double[] AP = new double[2];
+                    AP[0] = POINTS[j].XPOS - POINTS[i].XPOS;
+                    AP[1] = POINTS[j].YPOS - POINTS[i].YPOS;
+
+                    // Finding the perpendicular distance using |(AB X AP)/|AB||
+                    double x1 = AB[0];
+                    double y1 = AB[1];
+                    double x2 = AP[0];
+                    double y2 = AP[1];
+                    double mod = Math.sqrt(x1 * x1 + y1 * y1);
+                    dis = Math.abs(x1 * y2 - y1 * x2) / mod;
+                }
+                //check if within DIST
+                if (dis > PARAMETERS.DIST) {
+                    CMV[6] = true;
+                    return;
+                }
+                j++;
+            }
+        }
+        CMV[6] = false;
+    }
+
+
+    /**
+     * LIC 11 is:
+     * There exists at least one set of two data points, (X[i],Y[i]) and (X[j],Y[j]),
+     * separated by exactly G_PTS consecutive intervening points, such that X[j] - X[i] < 0.
+     * (where i < j ) The condition is not met when NUMPOINTS < 3.
+     * 1 ≤ G_PTS ≤ NUMPOINTS−2
+     */
+    public void LIC11() {
+        if (
+                (NUMPOINTS < 3)
+                || (PARAMETERS.G_PTS < 1)
+                || (PARAMETERS.G_PTS > NUMPOINTS-2)
+        ) {
+           CMV[11] = false;
+           return;
+        }
+
+        // Search after data points separated by G_PTS number of points
+        for (int i = 0 ; i < NUMPOINTS-PARAMETERS.G_PTS-1 ; i++) {
+            // Extract XPOS for the ith and jth points
+            double x_i = POINTS[i].XPOS;
+            int j = i + PARAMETERS.G_PTS + 1;
+            double x_j = POINTS[j].XPOS;
+
+            // Does X[j] - X[i] < 0 hold
+            if (x_j - x_i < 0) {
+                CMV[11] = true;
+                return;
+            }
+        }
+        CMV[11] = false;
     }
 }   
