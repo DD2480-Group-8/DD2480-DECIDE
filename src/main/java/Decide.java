@@ -11,7 +11,7 @@ public class Decide {
     int NUMPOINTS;
     Coordinate[] POINTS;
     CONNECTORS[][] LCM;
-    boolean[][] PUM;
+    boolean[][] PUM = new boolean[15][15];
     boolean[] CMV = new boolean[15];
     boolean[] PUV;
     boolean[] FUV;
@@ -24,6 +24,43 @@ public class Decide {
         this.PARAMETERS = params;
         this.LCM = LCM;
         this.PUV = PUV;
+    }
+
+    /**
+     * Calculates the Preliminary Unlocking Matrix (PUM) using the CMV
+     * and LCM.
+     */
+    public void PUM(){
+
+        //Run all LICs to calculate CMV. Might want to move this later.
+        LIC0();
+        LIC2();
+        LIC3();
+        LIC4();
+        LIC5();
+        LIC6();
+        LIC7();
+        LIC8();
+        LIC9();
+        LIC10();
+        LIC11();
+        LIC12();
+        LIC13();
+        LIC14();
+        
+        //Calculate PUM values for each LIC pair using LCM matrix. 
+        for(int i = 0; i < PUM.length; i++){
+            for(int j = 0; j < PUM[0].length; j++){
+                switch(LCM[i][j]){
+                    case NOTUSED:
+                        PUM[i][j] = true;
+                    case ANDD:
+                        PUM[i][j] = CMV[i] && CMV[j];
+                    case ORR:
+                        PUM[i][j] = CMV[i] || CMV[j];
+                }
+            }
+        }
     }
 
     public void LIC0() {
