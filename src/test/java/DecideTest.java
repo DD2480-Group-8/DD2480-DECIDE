@@ -650,6 +650,7 @@ public class DecideTest {
                 new Coordinate(15,25),
                 new Coordinate(25,30),
                 new Coordinate(40,50),
+                new Coordinate(50,75),
         };
         decide.NUMPOINTS = decide.POINTS.length;
         params.A_PTS = 1;
