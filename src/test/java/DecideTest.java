@@ -1,3 +1,5 @@
+import java.beans.Transient;
+
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -70,7 +72,45 @@ public class DecideTest {
     // Tests starts below
 
     // Write tests below
+    
+    /**
+     * A simple test for the PUM function. Creates a Decide instance where the first LIC is true,
+     * the second is false, and where only the first two LIC are used. 
+     */
+    @Test
+    public void PUMTest(){
+        //Setup where LIC0 is satisfied but LIC1 is not. 
+        setup1();
+        decide.PARAMETERS.RADIUS1 = 10;
+        decide.PARAMETERS.LENGTH1 = 3;
+        decide.NUMPOINTS = 3;
+        decide.POINTS = new Coordinate[] {
+            new Coordinate(1, 0),
+            new Coordinate(10, 10),
+            new Coordinate(-1, -2)
+    }   ;
+        
+        //Sets all LCM values to NOTUSED.
+        for(int i = 0; i < decide.LCM.length; i++){
+            for(int j = 0; j < decide.LCM[0].length; j++){
+                    decide.LCM[i][j] = Decide.CONNECTORS.NOTUSED;
+            }
+        }
+        //Sets four cases where the LICs are used. 
+        decide.LCM[0][0] = Decide.CONNECTORS.ANDD;
+        decide.LCM[0][1] = Decide.CONNECTORS.ANDD;
+        decide.LCM[1][0] = Decide.CONNECTORS.ORR;
+        decide.LCM[1][1] = Decide.CONNECTORS.ORR;
+        
+        //Calculates the PUM matrix
+        decide.PUM();
 
+        //Checks that the PUM matrix contains the expected values. 
+        Assert.assertTrue(decide.PUM[0][0]);
+        Assert.assertFalse(decide.PUM[0][1]);
+        Assert.assertTrue(decide.PUM[1][0]);
+        Assert.assertFalse(decide.PUM[1][1]);
+    }
 
     @Test
     public void LIC0TestFalse() {
