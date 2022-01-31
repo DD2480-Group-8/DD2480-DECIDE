@@ -35,7 +35,7 @@ public class Decide {
     }
 
 
-    /*
+    /** 
     * Implementation of LIC2: There exists at least one set of three consecutive data points which form an angle such that: angle < (PI − EPSILON)
     * or angle > (PI + EPSILON). The second of the three consecutive points is always the vertex of the angle. If either the first point or the 
     * last point (or both) coincides with the vertex, the angle is undefined and the LIC is not satisfied by those three points.
@@ -55,11 +55,15 @@ public class Decide {
         CMV[2] = false;
     }
 
-    /*
+    /**
     * Helper function that figures out the angle formed by 3 Coordinates. 
     * The second argument is the vertex of the angle. 
+    * @param i First Coordinate
+    * @param j Second Coordinate and the vertex of the angle
+    * @param k Third Coordinate
+    * @return The angle formed by the input Coordinates
     */
-    public double checkAngle(Coordinate i, Coordinate j, Coordinate k){
+    protected double checkAngle(Coordinate i, Coordinate j, Coordinate k){
         i = coordSubtract(i,j);
         k = coordSubtract(k,j);
         if((i.XPOS == 0 && i.YPOS == 0) || (k.XPOS == 0 && k.YPOS == 0)){
@@ -70,10 +74,13 @@ public class Decide {
         return Math.acos(dotProduct/lenProduct);
     }
 
-    /*
-    * Helper function that subtracts one Coordinate from another. 
+    /**
+    * Helper function that subtracts one Coordinate from another.
+    * @param i Coordinate to be subtracted from
+    * @param j Coordinate to subtract
+    * @return The resulting Coordinate after the subtraction. 
     */
-    public Coordinate coordSubtract(Coordinate i, Coordinate j){
+    protected Coordinate coordSubtract(Coordinate i, Coordinate j){
         Coordinate res = new Coordinate(0,0);
         res.XPOS = i.XPOS - j.XPOS;
         res.YPOS = i.YPOS - j.YPOS;
