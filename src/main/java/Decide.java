@@ -226,11 +226,17 @@ public class Decide {
         }
     }
 
+    /**
+     * LIC 5 is:
+     * There exists at least one set of two consecutive data points, (X[i],Y[i]) and (X[j],Y[j]), such
+     * that X[j] - X[i] < 0. (where i = j-1)
+     */
     public void LIC5() {
         for (int i = 1; i < NUMPOINTS; i++) {
             double diff = POINTS[i].XPOS - POINTS[i-1].XPOS;
             if (diff < 0) {
                 CMV[5] = true;
+                break;
             }
         }
     }
