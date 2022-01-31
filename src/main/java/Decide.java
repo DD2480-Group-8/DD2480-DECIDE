@@ -1,7 +1,8 @@
 import java.util.Arrays;
 
 public class Decide {
-
+    
+    
     enum CONNECTORS {
         NOTUSED,
         ORR,
@@ -34,6 +35,7 @@ public class Decide {
 
         //Run all LICs to calculate CMV. Might want to move this later.
         LIC0();
+        LIC1();
         LIC2();
         LIC3();
         LIC4();
@@ -54,10 +56,13 @@ public class Decide {
                 switch(LCM[i][j]){
                     case NOTUSED:
                         PUM[i][j] = true;
+                        break;
                     case ANDD:
-                        PUM[i][j] = CMV[i] && CMV[j];
+                        PUM[i][j] = (CMV[i] && CMV[j]);
+                        break;
                     case ORR:
                         PUM[i][j] = CMV[i] || CMV[j];
+                        break;
                 }
             }
         }
