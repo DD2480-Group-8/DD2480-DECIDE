@@ -1,7 +1,8 @@
 import java.util.Arrays;
 
 public class Decide {
-
+    
+    
     enum CONNECTORS {
         NOTUSED,
         ORR,
@@ -11,7 +12,7 @@ public class Decide {
     int NUMPOINTS;
     Coordinate[] POINTS;
     CONNECTORS[][] LCM;
-    boolean[][] PUM;
+    boolean[][] PUM = new boolean[15][15];
     boolean[] CMV = new boolean[15];
     boolean[] PUV;
     boolean[] FUV;
@@ -24,6 +25,47 @@ public class Decide {
         this.PARAMETERS = params;
         this.LCM = LCM;
         this.PUV = PUV;
+    }
+
+    /**
+     * Calculates the Preliminary Unlocking Matrix (PUM) using the CMV
+     * and LCM.
+     */
+    public void PUM(){
+
+        //Run all LICs to calculate CMV. Might want to move this later.
+        LIC0();
+        LIC1();
+        LIC2();
+        LIC3();
+        LIC4();
+        LIC5();
+        LIC6();
+        LIC7();
+        LIC8();
+        LIC9();
+        LIC10();
+        LIC11();
+        LIC12();
+        LIC13();
+        LIC14();
+        
+        //Calculate PUM values for each LIC pair using LCM matrix. 
+        for(int i = 0; i < PUM.length; i++){
+            for(int j = 0; j < PUM[0].length; j++){
+                switch(LCM[i][j]){
+                    case NOTUSED:
+                        PUM[i][j] = true;
+                        break;
+                    case ANDD:
+                        PUM[i][j] = (CMV[i] && CMV[j]);
+                        break;
+                    case ORR:
+                        PUM[i][j] = CMV[i] || CMV[j];
+                        break;
+                }
+            }
+        }
     }
 
     public void LIC0() {
@@ -238,17 +280,17 @@ public class Decide {
      */
     public void LIC8() {
         if (NUMPOINTS >= 5) {
-            for (int i = 0; i < NUMPOINTS - PARAMETERS.A_PTS - PARAMETERS.B_PTS; i++) {
+            for (int i = 0; i < NUMPOINTS - PARAMETERS.A_PTS - PARAMETERS.B_PTS - 2; i++) {
                 // Find the centroid.
                 Coordinate centroid = new Coordinate(
-                        (POINTS[i].XPOS + POINTS[i+PARAMETERS.A_PTS].XPOS + POINTS[i+PARAMETERS.B_PTS].XPOS) / 3,
-                        (POINTS[i].YPOS + POINTS[i+PARAMETERS.A_PTS].YPOS + POINTS[i+PARAMETERS.B_PTS].YPOS) / 3
+                        (POINTS[i].XPOS + POINTS[i+PARAMETERS.A_PTS+1].XPOS + POINTS[i+PARAMETERS.A_PTS+PARAMETERS.B_PTS+2].XPOS) / 3,
+                        (POINTS[i].YPOS + POINTS[i+PARAMETERS.A_PTS+1].YPOS + POINTS[i+PARAMETERS.A_PTS+PARAMETERS.B_PTS+2].YPOS) / 3
                 );
                 // Check if any of the points have a distance to the centroid larger than the radius.
                 if (
                         (Math.sqrt(Math.pow(POINTS[i].XPOS - centroid.XPOS, 2) + Math.pow(POINTS[i].YPOS - centroid.YPOS, 2)) > PARAMETERS.RADIUS1)
-                                || (Math.sqrt(Math.pow(POINTS[i+PARAMETERS.A_PTS].XPOS - centroid.XPOS, 2) + Math.pow(POINTS[i+PARAMETERS.A_PTS].YPOS - centroid.YPOS, 2)) > PARAMETERS.RADIUS1)
-                                || (Math.sqrt(Math.pow(POINTS[i+PARAMETERS.B_PTS].XPOS - centroid.XPOS, 2) + Math.pow(POINTS[i+PARAMETERS.B_PTS].YPOS - centroid.YPOS, 2)) > PARAMETERS.RADIUS1)
+                                || (Math.sqrt(Math.pow(POINTS[i+PARAMETERS.A_PTS+1].XPOS - centroid.XPOS, 2) + Math.pow(POINTS[i+PARAMETERS.A_PTS+1].YPOS - centroid.YPOS, 2)) > PARAMETERS.RADIUS1)
+                                || (Math.sqrt(Math.pow(POINTS[i+PARAMETERS.A_PTS+PARAMETERS.B_PTS+2].XPOS - centroid.XPOS, 2) + Math.pow(POINTS[i+PARAMETERS.A_PTS+PARAMETERS.B_PTS+2].YPOS - centroid.YPOS, 2)) > PARAMETERS.RADIUS1)
                 ) {
                     CMV[8] = true;
                     break; // only need one set of points to fulfill this, no need to continue the loop.
