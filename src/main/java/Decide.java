@@ -24,6 +24,32 @@ public class Decide {
         this.PARAMETERS = params;
         this.LCM = LCM;
         this.PUV = PUV;
+
+        FUV = new boolean[15];
+    }
+
+    /**
+     * Function that calculates and sets all values of the FUV
+     */
+    public void calculateFUV() {
+        // Loops through the FUV
+        for (int i = 0 ; i < FUV.length ; i++) {
+            // If PUV[i] is false, then FUV[i] should be set to true
+            if (!PUV[i]) {
+                FUV[i] = true;
+            } else {
+                boolean FUVTempValue = true;
+                // Checks that the whole row PUM[i] is all true
+                for (int j = 0 ; j < PUM[i].length ; j++) {
+                    // If one element is false, FUV[i] should be set to false
+                    if (!PUM[i][j]) {
+                        FUVTempValue = false;
+                        break;
+                    }
+                }
+                FUV[i] = FUVTempValue;
+            }
+        }
     }
 
     public void LIC0() {
