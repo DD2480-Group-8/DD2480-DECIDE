@@ -1,4 +1,5 @@
 import java.beans.Transient;
+import java.util.Arrays;
 
 import org.junit.Assert;
 import org.junit.Test;
@@ -112,6 +113,31 @@ public class DecideTest {
         Assert.assertFalse(decide.PUM[1][1]);
     }
 
+    /**
+     * Test for FUV function. Will test both positive and negative cases.
+     */
+    @Test
+    public void FUVTest() {
+        // Setup of parameters to use
+        setup1();
+        // Change certain parameters to test Positive case
+        Arrays.fill(decide.PUM[0], true);
+        Arrays.fill(decide.PUV, true);
+
+        // Calculates the FUV
+        decide.calculateFUV();
+        // Test that FUV[0] is true as it should be
+        Assert.assertTrue(decide.FUV[0]);
+
+        // Change certain parameters to test Negative case
+        decide.PUM[0][1] = false;
+
+        // Calculates the FUV
+        decide.calculateFUV();
+        // Test that FUV[0] is false as it should be
+        Assert.assertFalse(decide.FUV[0]);
+    }
+
     @Test
     public void LIC0TestFalse() {
         setup1();
@@ -154,7 +180,7 @@ public class DecideTest {
         Assert.assertTrue(decide.CMV[1]);
     }
 
-    /*
+    /**
     * Tests a negative case for the LIC2 function.
     */
     @Test
@@ -171,7 +197,7 @@ public class DecideTest {
         Assert.assertFalse(decide.CMV[2]);
     }
 
-    /*
+    /**
     * Tests a positive case for the LIC2 function.
     */
     @Test
@@ -189,7 +215,7 @@ public class DecideTest {
         Assert.assertTrue(decide.CMV[2]);
     }
 
-    /*
+    /**
     * Tests the Coordinate angle checking helper function.
     */
     @Test
@@ -202,7 +228,7 @@ public class DecideTest {
         Assert.assertEquals(decide.checkAngle(c1, c2, c3), Math.PI/4, 0.001);
     }
 
-    /*
+    /**
     * Tests the Coordinate subtraction helper function.
     */
     @Test
