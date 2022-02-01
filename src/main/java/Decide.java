@@ -1,11 +1,22 @@
 import java.util.Arrays;
 
 public class Decide {
-    
-    
+
+    /**
+     * Operators used in the Logical Connector Matrix.
+     */
     enum CONNECTORS {
+        /**
+         * NOTUSED: CMV[i] and CMV[j] should not prevent any launch, set PUM[i, j] to true.
+         */
         NOTUSED,
+        /**
+         * ORR: Either CMV[i] and CMV[j] have to be true in order for a launch to be approved.
+         */
         ORR,
+        /**
+         * ANDD: Both CMV[i] and CMV[j] have to be true in order for launch to be approved.
+         */
         ANDD
     };
 
