@@ -150,6 +150,9 @@ public class DecideTest {
         Assert.assertFalse(decide.FUV[0]);
     }
 
+    /**
+     * Asserts that a false case for LIC0 is indeed false.
+     */
     @Test
     public void LIC0TestFalse() {
         setup1();
@@ -157,6 +160,9 @@ public class DecideTest {
         Assert.assertFalse(decide.CMV[0]);
     }
 
+    /**
+     * Asserts that a true case for LIC0 is indeed true.
+     */
     @Test
     public void LIC0TestTrue() {
         setup2();
