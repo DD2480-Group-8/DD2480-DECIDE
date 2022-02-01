@@ -94,6 +94,11 @@ public class Decide {
         }
     }
 
+    /**
+     * LIC0 is:
+     * There exists at least one set of two consecutive data points that are a distance greater than the length, LENGTH1, apart.
+     * (0 ≤ LENGTH1)
+     */
     public void LIC0() {
         for (int i = 1; i < NUMPOINTS; i++) {
             if (Math.sqrt(Math.pow(POINTS[i].XPOS - POINTS[i - 1].XPOS, 2) + Math.pow(POINTS[i].YPOS - POINTS[i - 1].YPOS, 2)) > PARAMETERS.LENGTH1) {
