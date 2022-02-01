@@ -739,9 +739,9 @@ public class DecideTest {
     }
 
 
-    /*
-    * Tests a negative case for the LIC 9 function.
-    */
+    /**
+     * Tests a negative case for the LIC 9 function.
+     */
     @Test
     public void LIC9NegativeTest1() {
         setup1();
@@ -758,9 +758,9 @@ public class DecideTest {
         Assert.assertFalse(decide.CMV[9]);
     }
     
-    /*
-    * Tests a negative case for the LIC 9 function where one point is equal to a corresponding angle vertex.
-    */
+    /**
+     * Tests a negative case for the LIC 9 function where one point is equal to a corresponding angle vertex.
+     */
     @Test
     public void LIC9NegativeTest2() {
         setup1();
@@ -778,9 +778,9 @@ public class DecideTest {
         Assert.assertFalse(decide.CMV[9]);
     }
 
-    /*
-    * Tests a positive case for the LIC 9 function.
-    */
+    /**
+     * Tests a positive case for the LIC 9 function.
+     */
     @Test
     public void LIC9PositiveTest1() {
         setup1();
