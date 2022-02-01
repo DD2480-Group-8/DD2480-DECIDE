@@ -323,6 +323,10 @@ public class DecideTest {
         Assert.assertFalse(decide.CMV[3]);
     }
 
+    /**
+     * Asserts that a true case for LIC4 is true.
+     * LIC4 is true if Q_PTS consecutive points are in more than quads different quadrants.
+     */
     @Test
     public void LIC4TestTrue() {
         setup1();
@@ -340,6 +344,10 @@ public class DecideTest {
         Assert.assertTrue(decide.CMV[4]);
     }
 
+    /**
+     * Asserts that a false case for LIC4 is false.
+     * LIC4 is true if Q_PTS consecutive points are in more than quads different quadrants.
+     */
     @Test
     public void LIC4TestFalse() {
         setup1();
@@ -357,6 +365,11 @@ public class DecideTest {
         Assert.assertFalse(decide.CMV[4]);
     }
 
+    /**
+     * Asserts that an invalid case for LIC4 sets CMV[4] to false.
+     * LIC4 is true if Q_PTS consecutive points are in more than quads different quadrants.
+     * (2 ≤ Q PTS ≤ NUMPOINTS), (1 ≤ QUADS ≤ 3)
+     */
     @Test
     public void LIC4TestInvalidInputs() {
         setup1();
