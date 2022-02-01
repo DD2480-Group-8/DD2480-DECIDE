@@ -52,6 +52,20 @@ public class Decide {
     }
 
     /**
+     * Launch decision based on the FUV. Condition to launch requieres all elements in the FUV to be true from 0 <= i <= 14
+     *
+     * @return the launch decision
+     */
+    public boolean launch() {
+        for (int i = 0 ; i < FUV.length ; i++) {
+            if (!FUV[i]) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    /**
      * Function that calculates and sets all values of the FUV
      */
     public void calculateFUV() {
