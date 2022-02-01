@@ -57,12 +57,18 @@ public class Decide {
      * @return the launch decision
      */
     public boolean launch() {
+        decide();
         for (int i = 0 ; i < FUV.length ; i++) {
             if (!FUV[i]) {
                 return false;
             }
         }
         return true;
+    }
+
+    public void decide() {
+        PUM();
+        calculateFUV();
     }
 
     /**
