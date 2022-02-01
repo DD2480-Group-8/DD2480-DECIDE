@@ -14,6 +14,9 @@ public class DecideTest {
     Parameters params;
     Decide decide;
 
+    /**
+     * Prefix function setting up necessary models to run tests on.
+     */
     public void setup1() {
          params = new Parameters(
                 1,
@@ -45,6 +48,9 @@ public class DecideTest {
         );
     }
 
+    /**
+     * Prefix function setting up necessary models to run tests on.
+     */
     public void setup2() {
         params = new Parameters(
                 1,
