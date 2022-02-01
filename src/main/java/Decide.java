@@ -25,6 +25,32 @@ public class Decide {
         this.PARAMETERS = params;
         this.LCM = LCM;
         this.PUV = PUV;
+
+        FUV = new boolean[15];
+    }
+
+    /**
+     * Function that calculates and sets all values of the FUV
+     */
+    public void calculateFUV() {
+        // Loops through the FUV
+        for (int i = 0 ; i < FUV.length ; i++) {
+            // If PUV[i] is false, then FUV[i] should be set to true
+            if (!PUV[i]) {
+                FUV[i] = true;
+            } else {
+                boolean FUVTempValue = true;
+                // Checks that the whole row PUM[i] is all true
+                for (int j = 0 ; j < PUM[i].length ; j++) {
+                    // If one element is false, FUV[i] should be set to false
+                    if (!PUM[i][j]) {
+                        FUVTempValue = false;
+                        break;
+                    }
+                }
+                FUV[i] = FUVTempValue;
+            }
+        }
     }
 
     /**
@@ -226,11 +252,17 @@ public class Decide {
         }
     }
 
+    /**
+     * LIC 5 is:
+     * There exists at least one set of two consecutive data points, (X[i],Y[i]) and (X[j],Y[j]), such
+     * that X[j] - X[i] < 0. (where i = j-1)
+     */
     public void LIC5() {
         for (int i = 1; i < NUMPOINTS; i++) {
             double diff = POINTS[i].XPOS - POINTS[i-1].XPOS;
             if (diff < 0) {
                 CMV[5] = true;
+                break;
             }
         }
     }
