@@ -287,7 +287,7 @@ public class DecideTest {
         Assert.assertTrue(decide.CMV[3]);
     }
 
-    /*
+    /**
      * Tests the LIC3 method that it executes correctly and sets CMV[3] to false,
      * due to the area being too small.
      */
