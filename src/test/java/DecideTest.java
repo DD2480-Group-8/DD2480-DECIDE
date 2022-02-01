@@ -1338,7 +1338,11 @@ public class DecideTest {
         Assert.assertFalse(decide.threePointsAreaComparison(3, true, 0,0));
         Assert.assertFalse(decide.threePointsAreaComparison(1, false, 0,0));
     }
-
+    /**
+     * Asserts that a true case for LIC12 sets CMV[12] to true.
+     * LIC12 is true if there exists at least one set of two data points separated by K_PTS, which are a distance greater than LENGTH1 apart
+     * and one set of two data points K_PTS apart that is a distance less than LENGTH2 apart.
+     */
     @Test
     public void LIC12TestTrue() {
         // Setup of parameters to use
@@ -1362,6 +1366,11 @@ public class DecideTest {
         Assert.assertTrue(decide.CMV[12]);
     }
 
+    /**
+     * Asserts that a false case for LIC12 sets CMV[12] to false.
+     * LIC12 is true if there exists at least one set of two data points separated by K_PTS, which are a distance greater than LENGTH1 apart
+     * and one set of two data points K_PTS apart that is a distance less than LENGTH2 apart.
+     */
     @Test
     public void LIC12TestFalse() {
         // Setup of parameters to use
@@ -1385,6 +1394,12 @@ public class DecideTest {
         Assert.assertFalse(decide.CMV[12]);
     }
 
+
+    /**
+     * Asserts that a case with invalid inputs for LIC12 sets CMV[12] to false.
+     * LIC12 is true if there exists at least one set of two data points separated by K_PTS, which are a distance greater than LENGTH1 apart
+     * and one set of two data points K_PTS apart that is a distance less than LENGTH2 apart.
+     */
     @Test
     public void LIC12InvalidInputs() {
         // Setup of parameters to use
