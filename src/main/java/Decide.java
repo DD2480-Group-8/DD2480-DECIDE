@@ -18,7 +18,14 @@ public class Decide {
     boolean[] FUV;
     Parameters PARAMETERS;
 
-
+    /**
+     * Constructor for the Decide Object
+     * @param numpts - The number of points/coordinates in the radar data.
+     * @param pts - The array of points/coordinates.
+     * @param params - The parameters used in the LIC calculations. @see parameters class for details.
+     * @param LCM - The Launch Condition Matrix, a matrix of Connector Enum boolean operators.
+     * @param PUV - The Preliminary Unlocking Vector, an array of boolean values.
+     */
     Decide(int numpts, Coordinate[] pts, Parameters params, CONNECTORS[][] LCM, boolean[] PUV){
         this.NUMPOINTS = numpts;
         this.POINTS = pts;
