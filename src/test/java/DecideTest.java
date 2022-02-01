@@ -402,7 +402,11 @@ public class DecideTest {
         Assert.assertFalse(decide.CMV[4]);
     }
 
-  
+    /**
+     * Asserts that a false case for LIC5 is false.
+     * LIC5 is true if there exists at least one set of two consecutive data points, (X[i],Y[i]) and (X[j],Y[j]), such
+     * that X[j] - X[i] < 0. (where i = j-1)
+     */
     @Test
     public void LIC5TestFalse() {
         setup1();
@@ -410,6 +414,11 @@ public class DecideTest {
         Assert.assertFalse(decide.CMV[5]);
     }
 
+    /**
+     * Asserts that a true case for LIC5 is true.
+     * LIC5 is true if there exists at least one set of two consecutive data points, (X[i],Y[i]) and (X[j],Y[j]), such
+     * that X[j] - X[i] < 0. (where i = j-1)
+     */
     @Test
     public void LIC5TestTrue() {
         setup2();
