@@ -4,6 +4,12 @@ import java.util.Arrays;
 import org.junit.Assert;
 import org.junit.Test;
 
+
+/**
+ * DecideTest Class
+ * Contains Unit tests and prefix values for all methods inside to class Decide.
+ * All methods is tested with positive/negative test cases, as well as some tests for invalid parameters.
+ */
 public class DecideTest {
     Parameters params;
     Decide decide;
