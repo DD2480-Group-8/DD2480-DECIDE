@@ -129,61 +129,6 @@ public class Decide {
         }
     }
 
-
-    /** 
-    * Implementation of LIC2: There exists at least one set of three consecutive data points which form an angle such that: angle < (PI − EPSILON)
-    * or angle > (PI + EPSILON). The second of the three consecutive points is always the vertex of the angle. If either the first point or the 
-    * last point (or both) coincides with the vertex, the angle is undefined and the LIC is not satisfied by those three points.
-    */
-    public void LIC2(){
-        if(NUMPOINTS < 3){
-            CMV[2] = false;
-            return;
-        }
-        for(int i = 0; i < NUMPOINTS-2; i++){
-            double angle = checkAngle(POINTS[i], POINTS[i+1], POINTS[i+2]);
-            if( angle > Math.PI + PARAMETERS.EPSILON || angle < Math.PI - PARAMETERS.EPSILON){
-                CMV[2] = true;
-                return;
-            }
-        }
-        CMV[2] = false;
-    }
-
-    /**
-    * Helper function that figures out the angle formed by 3 Coordinates. 
-    * The second argument is the vertex of the angle. 
-    * @param i First Coordinate
-    * @param j Second Coordinate and the vertex of the angle
-    * @param k Third Coordinate
-    * @return The angle formed by the input Coordinates
-    */
-    protected double checkAngle(Coordinate i, Coordinate j, Coordinate k){
-        i = coordSubtract(i,j);
-        k = coordSubtract(k,j);
-        if((i.XPOS == 0 && i.YPOS == 0) || (k.XPOS == 0 && k.YPOS == 0)){
-            return Math.PI;
-        }
-        double dotProduct = i.XPOS * k.XPOS + i.YPOS * k.YPOS;
-        double lenProduct = Math.sqrt(Math.pow(i.XPOS,2) + Math.pow(i.YPOS,2)) * Math.sqrt(Math.pow(k.XPOS,2) + Math.pow(k.YPOS,2));
-        return Math.acos(dotProduct/lenProduct);
-    }
-
-    /**
-    * Helper function that subtracts one Coordinate from another.
-    * @param i Coordinate to be subtracted from
-    * @param j Coordinate to subtract
-    * @return The resulting Coordinate after the subtraction. 
-    */
-    protected Coordinate coordSubtract(Coordinate i, Coordinate j){
-        Coordinate res = new Coordinate(0,0);
-        res.XPOS = i.XPOS - j.XPOS;
-        res.YPOS = i.YPOS - j.YPOS;
-        return(res);
-    }
-
-
-
     /**
      * Implementation of LIC1: There exists at least one set of three consecutive data points that cannot all be contained
      * within or on a circle of radius RADIUS1.
@@ -207,6 +152,26 @@ public class Decide {
                 break; // only need one set of points to fulfill this, no need to continue the loop.
             }
         }
+    }
+
+    /** 
+    * Implementation of LIC2: There exists at least one set of three consecutive data points which form an angle such that: angle < (PI − EPSILON)
+    * or angle > (PI + EPSILON). The second of the three consecutive points is always the vertex of the angle. If either the first point or the 
+    * last point (or both) coincides with the vertex, the angle is undefined and the LIC is not satisfied by those three points.
+    */
+    public void LIC2(){
+        if(NUMPOINTS < 3){
+            CMV[2] = false;
+            return;
+        }
+        for(int i = 0; i < NUMPOINTS-2; i++){
+            double angle = checkAngle(POINTS[i], POINTS[i+1], POINTS[i+2]);
+            if( angle > Math.PI + PARAMETERS.EPSILON || angle < Math.PI - PARAMETERS.EPSILON){
+                CMV[2] = true;
+                return;
+            }
+        }
+        CMV[2] = false;
     }
 
     /**
@@ -293,8 +258,71 @@ public class Decide {
             }
         }
     }
-    
-    
+
+    /**
+     LIC 6 is:
+     There exists at least one set of N PTS consecutive data points such that at least one of the
+     points lies a distance greater than DIST from the line joining the first and last of these N PTS
+     points. If the first and last points of these N PTS are identical, then the calculated distance
+     to compare with DIST will be the distance from the coincident point to all other points of
+     the N PTS consecutive points. The condition is not met when NUMPOINTS < 3.
+     (3 < N PTS < NUMPOINTS), (0 < DIST)
+     */
+    public void LIC6() {
+        if (NUMPOINTS < 3 || PARAMETERS.N_PTS < 3 || PARAMETERS.DIST <= 0) {
+            CMV[6] = false;
+            return;
+        }
+        double dis;
+        boolean same;
+        for (int i = 0; i < NUMPOINTS - PARAMETERS.N_PTS + 1; i++) {
+            double[] AB = new double[2];
+            same = false;
+            //check if [i]th and [i+N_PTS]th coordinate are the same
+            if (POINTS[i + PARAMETERS.N_PTS - 1].XPOS == POINTS[i].XPOS
+                    && POINTS[i + PARAMETERS.N_PTS - 1].YPOS == POINTS[i].YPOS) {
+                same = true;
+            }
+            // form vector AB between the [i]th and [i+N_PTS]th coordinate.
+            else {
+                AB[0] = POINTS[i + PARAMETERS.N_PTS - 1].XPOS - POINTS[i].XPOS;
+                AB[1] = POINTS[i + PARAMETERS.N_PTS - 1].YPOS - POINTS[i].YPOS;
+            }
+            int j = i + 1;
+            while (j < i + PARAMETERS.N_PTS - 1) {
+                // case if points are same
+                if (same) {
+                    double x1 = POINTS[i].XPOS;
+                    double y1 = POINTS[i].YPOS;
+                    double x2 = POINTS[j].XPOS;
+                    double y2 = POINTS[j].YPOS;
+                    dis = Math.sqrt((y2 - y1) * (y2 - y1) + (x2 - x1) * (x2 - x1));
+                }
+                // vector AP between the [i]th and [j]th coordinate.
+                else {
+                    double[] AP = new double[2];
+                    AP[0] = POINTS[j].XPOS - POINTS[i].XPOS;
+                    AP[1] = POINTS[j].YPOS - POINTS[i].YPOS;
+
+                    // Finding the perpendicular distance using |(AB X AP)/|AB||
+                    double x1 = AB[0];
+                    double y1 = AB[1];
+                    double x2 = AP[0];
+                    double y2 = AP[1];
+                    double mod = Math.sqrt(x1 * x1 + y1 * y1);
+                    dis = Math.abs(x1 * y2 - y1 * x2) / mod;
+                }
+                //check if within DIST
+                if (dis > PARAMETERS.DIST) {
+                    CMV[6] = true;
+                    return;
+                }
+                j++;
+            }
+        }
+        CMV[6] = false;
+    }
+
     /**
      * LIC 7 is:
      * There exists at least one set of two data points separated by exactly K_PTS consecutive
@@ -385,7 +413,6 @@ public class Decide {
         CMV[9] = false;
     }
 
-  
     /**
      * LIC 10 is:
      * There exists at least one set of three data points separated by exactly E_PTS and F_PTS consecutive
@@ -409,158 +436,6 @@ public class Decide {
     }
 
     /**
-     * LIC 14 is:
-     * There exists at least one set of three data points, separated by exactly E_PTS and F_PTS
-     * consecutive intervening points, respectively, that are the vertices of a triangle with area
-     * greater than AREA1. In addition, there exist three data points (which can be the same or
-     * different from the three data points just mentioned) separated by exactly E_PTS and F_PTS
-     * consecutive intervening points, respectively, that are the vertices of a triangle with area
-     * less than AREA2. Both parts must be true for the LIC to be true.
-     * The condition is not met when NUMPOINTS < 5.
-     * 0 ≤ AREA2
-     */
-    public void LIC14() {
-        if (
-                (NUMPOINTS < 5)
-                || (1 > PARAMETERS.E_PTS)
-                || (1 > PARAMETERS.F_PTS)
-                || (PARAMETERS.E_PTS + PARAMETERS.E_PTS > NUMPOINTS-3)
-                || (PARAMETERS.AREA1 < 0)
-                || (PARAMETERS.AREA2 < 0)
-        ) {
-            CMV[14] = false;
-            return;
-        }
-
-        boolean area2Greater = false;
-
-        boolean area1Greater = threePointsAreaComparison(PARAMETERS.AREA1, true, PARAMETERS.E_PTS, PARAMETERS.F_PTS);
-
-        if (area1Greater) {
-            area2Greater = threePointsAreaComparison(PARAMETERS.AREA2, false, PARAMETERS.E_PTS, PARAMETERS.F_PTS);
-        }
-        // Set to true only if both conditions are true
-        CMV[14] = area1Greater && area2Greater;
-    }
-
-    /**
-     * Help function that finds three consecutive points and tests if their area is greater than the input area
-     *
-     * @param area Area to be compared against
-     * @param shouldBeGreater A boolean to know if the thisArea should be greater or less than input area
-     * @param offset Number of points that should be intervening the first and second point in the triangle
-     * @param offset2 Number of points that should be intervening the second and third point in the triangle
-     * @return True if an area is found that is greater than "area"
-     */
-    protected boolean threePointsAreaComparison(double area, boolean shouldBeGreater, int offset, int offset2) {
-        for (int n = 0 ; n < NUMPOINTS-2-offset-offset2 ; n++) {
-            double thisArea = calculateArea(
-                    POINTS[n],
-                    POINTS[n+1+offset],
-                    POINTS[n+2+offset+offset2]
-            );
-
-            // If-condition to know if thisArea should be greater or less than area
-            if (shouldBeGreater) {
-                if (thisArea >= area) {
-                    return true;
-                }
-            } else {
-                if (thisArea <= area) {
-                    return true;
-                }
-            }
-        }
-        return false;
-    }
-
-    /**
-     * Takes in three coordinates and calculates the area between them
-     *
-     * @param i The first Coordinate
-     * @param j The second Coordinate
-     * @param k The third Coordinate
-     * @return The area of the three Coordinates
-     */
-    protected double calculateArea(Coordinate i, Coordinate j, Coordinate k) {
-        // Extract the coordinates of the three data points
-        double x1 = i.XPOS;
-        double y1 = i.YPOS;
-        double x2 = j.XPOS;
-        double y2 = j.YPOS;
-        double x3 = k.XPOS;
-        double y3 = k.YPOS;
-
-        // Calculate the area of the three data points and returns it
-        return Math.abs((x1*(y2-y3)+x2*(y3-y1)+x3*(y1-y2))/2);
-    }
-
-     /**
-     LIC 6 is:
-     There exists at least one set of N PTS consecutive data points such that at least one of the
-     points lies a distance greater than DIST from the line joining the first and last of these N PTS
-     points. If the first and last points of these N PTS are identical, then the calculated distance
-     to compare with DIST will be the distance from the coincident point to all other points of
-     the N PTS consecutive points. The condition is not met when NUMPOINTS < 3.
-     (3 < N PTS < NUMPOINTS), (0 < DIST)
-     */
-    public void LIC6() {
-        if (NUMPOINTS < 3 || PARAMETERS.N_PTS < 3 || PARAMETERS.DIST <= 0) {
-            CMV[6] = false;
-            return;
-        }
-        double dis;
-        boolean same;
-        for (int i = 0; i < NUMPOINTS - PARAMETERS.N_PTS + 1; i++) {
-            double[] AB = new double[2];
-            same = false;
-            //check if [i]th and [i+N_PTS]th coordinate are the same
-            if (POINTS[i + PARAMETERS.N_PTS - 1].XPOS == POINTS[i].XPOS
-                    && POINTS[i + PARAMETERS.N_PTS - 1].YPOS == POINTS[i].YPOS) {
-                same = true;
-            }
-            // form vector AB between the [i]th and [i+N_PTS]th coordinate.
-            else {
-                AB[0] = POINTS[i + PARAMETERS.N_PTS - 1].XPOS - POINTS[i].XPOS;
-                AB[1] = POINTS[i + PARAMETERS.N_PTS - 1].YPOS - POINTS[i].YPOS;
-            }
-            int j = i + 1;
-            while (j < i + PARAMETERS.N_PTS - 1) {
-                // case if points are same
-                if (same) {
-                    double x1 = POINTS[i].XPOS;
-                    double y1 = POINTS[i].YPOS;
-                    double x2 = POINTS[j].XPOS;
-                    double y2 = POINTS[j].YPOS;
-                    dis = Math.sqrt((y2 - y1) * (y2 - y1) + (x2 - x1) * (x2 - x1));
-                }
-                // vector AP between the [i]th and [j]th coordinate.
-                else {
-                    double[] AP = new double[2];
-                    AP[0] = POINTS[j].XPOS - POINTS[i].XPOS;
-                    AP[1] = POINTS[j].YPOS - POINTS[i].YPOS;
-
-                    // Finding the perpendicular distance using |(AB X AP)/|AB||
-                    double x1 = AB[0];
-                    double y1 = AB[1];
-                    double x2 = AP[0];
-                    double y2 = AP[1];
-                    double mod = Math.sqrt(x1 * x1 + y1 * y1);
-                    dis = Math.abs(x1 * y2 - y1 * x2) / mod;
-                }
-                //check if within DIST
-                if (dis > PARAMETERS.DIST) {
-                    CMV[6] = true;
-                    return;
-                }
-                j++;
-            }
-        }
-        CMV[6] = false;
-    }
-
-
-    /**
      * LIC 11 is:
      * There exists at least one set of two data points, (X[i],Y[i]) and (X[j],Y[j]),
      * separated by exactly G_PTS consecutive intervening points, such that X[j] - X[i] < 0.
@@ -570,11 +445,11 @@ public class Decide {
     public void LIC11() {
         if (
                 (NUMPOINTS < 3)
-                || (PARAMETERS.G_PTS < 1)
-                || (PARAMETERS.G_PTS > NUMPOINTS-2)
+                        || (PARAMETERS.G_PTS < 1)
+                        || (PARAMETERS.G_PTS > NUMPOINTS-2)
         ) {
-           CMV[11] = false;
-           return;
+            CMV[11] = false;
+            return;
         }
 
         // Search after data points separated by G_PTS number of points
@@ -592,6 +467,58 @@ public class Decide {
         }
         CMV[11] = false;
     }
+
+    /**
+     * LIC12 implements:
+     * There exists at least one set of two data points, separated by exactly K PTS consecutive intervening points,
+     * which are a distance greater than the length, LENGTH1, apart. In addition,
+     * there exists at least one set of two data points (which can be the same or different from the two data points just mentioned),
+     * separated by exactly K PTS consecutive intervening points, that are a distance less than the length, LENGTH2, apart.
+     * Both parts must be true for the LIC to be true.
+     * The condition is not met when NUMPOINTS < 3.
+     * 0 ≤ LENGTH2
+     */
+    public void LIC12() {
+        // Check input conditions
+        if (
+                (NUMPOINTS < 3)
+                        || (PARAMETERS.LENGTH1 < 0) // I'm assuming a length cannot be negative.
+                        || (PARAMETERS.LENGTH2 < 0)
+                        || (PARAMETERS.K_PTS < 0) // we have to have 2 endpoints and at least k points in between.
+        ) {
+            CMV[12] = false;
+            return;
+        }
+
+        // We have two conditions that have to be true for the LIC, flip their corresponding bit once they are fulfilled.
+        int[] conditions = new int[]{ 0, 0 };
+        // + 1 and -1 for the start-and endpoint since we have to have K_PTS _between_ them.
+        for (int i = PARAMETERS.K_PTS + 1; i < NUMPOINTS; i++) {
+            Coordinate endpoint = POINTS[i];
+            Coordinate startpoint = POINTS[i - PARAMETERS.K_PTS - 1];
+
+            // Get the distance between the two coordinates
+            double distance = Math.sqrt(Math.pow(endpoint.XPOS - startpoint.XPOS, 2) + Math.pow(endpoint.YPOS - startpoint.YPOS, 2));
+
+            // Condition 1: which are a distance greater than the length, LENGTH1, apart.
+            if (distance > PARAMETERS.LENGTH1) {
+                conditions[0] = 1;
+            }
+
+            // Condition 2: that are a distance less than the length, LENGTH2, apart. Can be the same points that fulfilled condition 1.
+            if (distance < PARAMETERS.LENGTH2) {
+                conditions[1] = 1;
+            }
+
+            // If both conditions are fulfilled, set CMV[12] to true.
+            if (Arrays.stream(conditions).sum() == 2) {
+                CMV[12] = true;
+                return;
+            }
+
+        }
+    }
+
     /**
      LIC 13 is:
      There exists at least one set of three data points, separated by exactly A PTS and B PTS
@@ -649,56 +576,124 @@ public class Decide {
         CMV[13] = false;
     }
 
-
     /**
-     * LIC12 implements:
-     * There exists at least one set of two data points, separated by exactly K PTS consecutive intervening points,
-     * which are a distance greater than the length, LENGTH1, apart. In addition,
-     * there exists at least one set of two data points (which can be the same or different from the two data points just mentioned),
-     * separated by exactly K PTS consecutive intervening points, that are a distance less than the length, LENGTH2, apart.
-     * Both parts must be true for the LIC to be true.
-     * The condition is not met when NUMPOINTS < 3.
-     * 0 ≤ LENGTH2
+     * LIC 14 is:
+     * There exists at least one set of three data points, separated by exactly E_PTS and F_PTS
+     * consecutive intervening points, respectively, that are the vertices of a triangle with area
+     * greater than AREA1. In addition, there exist three data points (which can be the same or
+     * different from the three data points just mentioned) separated by exactly E_PTS and F_PTS
+     * consecutive intervening points, respectively, that are the vertices of a triangle with area
+     * less than AREA2. Both parts must be true for the LIC to be true.
+     * The condition is not met when NUMPOINTS < 5.
+     * 0 ≤ AREA2
      */
-    public void LIC12() {
-        // Check input conditions
+    public void LIC14() {
         if (
-                (NUMPOINTS < 3)
-                || (PARAMETERS.LENGTH1 < 0) // I'm assuming a length cannot be negative.
-                || (PARAMETERS.LENGTH2 < 0)
-                || (PARAMETERS.K_PTS < 0) // we have to have 2 endpoints and at least k points in between.
+                (NUMPOINTS < 5)
+                || (1 > PARAMETERS.E_PTS)
+                || (1 > PARAMETERS.F_PTS)
+                || (PARAMETERS.E_PTS + PARAMETERS.E_PTS > NUMPOINTS-3)
+                || (PARAMETERS.AREA1 < 0)
+                || (PARAMETERS.AREA2 < 0)
         ) {
-            CMV[12] = false;
+            CMV[14] = false;
             return;
         }
 
-        // We have two conditions that have to be true for the LIC, flip their corresponding bit once they are fulfilled.
-        int[] conditions = new int[]{ 0, 0 };
-        // + 1 and -1 for the start-and endpoint since we have to have K_PTS _between_ them.
-        for (int i = PARAMETERS.K_PTS + 1; i < NUMPOINTS; i++) {
-            Coordinate endpoint = POINTS[i];
-            Coordinate startpoint = POINTS[i - PARAMETERS.K_PTS - 1];
+        boolean area2Greater = false;
 
-            // Get the distance between the two coordinates
-            double distance = Math.sqrt(Math.pow(endpoint.XPOS - startpoint.XPOS, 2) + Math.pow(endpoint.YPOS - startpoint.YPOS, 2));
+        boolean area1Greater = threePointsAreaComparison(PARAMETERS.AREA1, true, PARAMETERS.E_PTS, PARAMETERS.F_PTS);
 
-            // Condition 1: which are a distance greater than the length, LENGTH1, apart.
-            if (distance > PARAMETERS.LENGTH1) {
-                    conditions[0] = 1;
-            }
-
-            // Condition 2: that are a distance less than the length, LENGTH2, apart. Can be the same points that fulfilled condition 1.
-            if (distance < PARAMETERS.LENGTH2) {
-                    conditions[1] = 1;
-            }
-
-            // If both conditions are fulfilled, set CMV[12] to true.
-            if (Arrays.stream(conditions).sum() == 2) {
-                CMV[12] = true;
-                return;
-            }
-
+        if (area1Greater) {
+            area2Greater = threePointsAreaComparison(PARAMETERS.AREA2, false, PARAMETERS.E_PTS, PARAMETERS.F_PTS);
         }
+        // Set to true only if both conditions are true
+        CMV[14] = area1Greater && area2Greater;
     }
 
+    // HELPER FUNCTIONS
+
+    /**
+     * Help function that finds three consecutive points and tests if their area is greater than the input area
+     *
+     * @param area Area to be compared against
+     * @param shouldBeGreater A boolean to know if the thisArea should be greater or less than input area
+     * @param offset Number of points that should be intervening the first and second point in the triangle
+     * @param offset2 Number of points that should be intervening the second and third point in the triangle
+     * @return True if an area is found that is greater than "area"
+     */
+    protected boolean threePointsAreaComparison(double area, boolean shouldBeGreater, int offset, int offset2) {
+        for (int n = 0 ; n < NUMPOINTS-2-offset-offset2 ; n++) {
+            double thisArea = calculateArea(
+                    POINTS[n],
+                    POINTS[n+1+offset],
+                    POINTS[n+2+offset+offset2]
+            );
+
+            // If-condition to know if thisArea should be greater or less than area
+            if (shouldBeGreater) {
+                if (thisArea >= area) {
+                    return true;
+                }
+            } else {
+                if (thisArea <= area) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Takes in three coordinates and calculates the area between them
+     *
+     * @param i The first Coordinate
+     * @param j The second Coordinate
+     * @param k The third Coordinate
+     * @return The area of the three Coordinates
+     */
+    protected double calculateArea(Coordinate i, Coordinate j, Coordinate k) {
+        // Extract the coordinates of the three data points
+        double x1 = i.XPOS;
+        double y1 = i.YPOS;
+        double x2 = j.XPOS;
+        double y2 = j.YPOS;
+        double x3 = k.XPOS;
+        double y3 = k.YPOS;
+
+        // Calculate the area of the three data points and returns it
+        return Math.abs((x1*(y2-y3)+x2*(y3-y1)+x3*(y1-y2))/2);
+    }
+
+    /**
+     * Helper function that figures out the angle formed by 3 Coordinates.
+     * The second argument is the vertex of the angle.
+     * @param i First Coordinate
+     * @param j Second Coordinate and the vertex of the angle
+     * @param k Third Coordinate
+     * @return The angle formed by the input Coordinates
+     */
+    protected double checkAngle(Coordinate i, Coordinate j, Coordinate k){
+        i = coordSubtract(i,j);
+        k = coordSubtract(k,j);
+        if((i.XPOS == 0 && i.YPOS == 0) || (k.XPOS == 0 && k.YPOS == 0)){
+            return Math.PI;
+        }
+        double dotProduct = i.XPOS * k.XPOS + i.YPOS * k.YPOS;
+        double lenProduct = Math.sqrt(Math.pow(i.XPOS,2) + Math.pow(i.YPOS,2)) * Math.sqrt(Math.pow(k.XPOS,2) + Math.pow(k.YPOS,2));
+        return Math.acos(dotProduct/lenProduct);
+    }
+
+    /**
+     * Helper function that subtracts one Coordinate from another.
+     * @param i Coordinate to be subtracted from
+     * @param j Coordinate to subtract
+     * @return The resulting Coordinate after the subtraction.
+     */
+    protected Coordinate coordSubtract(Coordinate i, Coordinate j){
+        Coordinate res = new Coordinate(0,0);
+        res.XPOS = i.XPOS - j.XPOS;
+        res.YPOS = i.YPOS - j.YPOS;
+        return(res);
+    }
 }   
