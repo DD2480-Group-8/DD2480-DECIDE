@@ -1,3 +1,8 @@
+/**
+ * Parameters class
+ * Custom type used to model the inputs of the Decide problem.
+ * The properties of the parameters class are used to calculate the LICs in the Decide class.
+ */
 public class Parameters {
     public double LENGTH1;
     public double RADIUS1;
@@ -20,7 +25,6 @@ public class Parameters {
     public double AREA2;
 
     /**
-     *
      * @param length1 Length in LIC 0, 7 and 12
      * @param radius1 Radius in LICs 1, 8, 13
      * @param epsilon Deviation from PI in LICs 2, 9
