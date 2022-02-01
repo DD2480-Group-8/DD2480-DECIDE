@@ -1,5 +1,9 @@
 import java.util.Arrays;
 
+/**
+ * Decide Class
+ * Implements all the functionality needed to determine whether the anti-ballistic missile system should launch.
+ */
 public class Decide {
 
     /**
