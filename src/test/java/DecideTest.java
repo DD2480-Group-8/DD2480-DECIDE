@@ -170,7 +170,11 @@ public class DecideTest {
         Assert.assertTrue(decide.CMV[0]);
     }
 
-  
+
+    /**
+     * Asserts that a false case for LIC1 is false.
+     * LIC1 is true if there exists no three points that can be contained within a circle of radius RADIUS1.
+     */
     @Test
     public void LIC1TestFalse() {
         setup1();
@@ -184,6 +188,10 @@ public class DecideTest {
         Assert.assertFalse(decide.CMV[1]);
     }
 
+    /**
+     * Asserts that a true case for LIC1 is true.
+     * LIC1 is true if there exists no three points that can be contained within a circle of radius RADIUS1.
+     */
     @Test
     public void LIC1TestTrue() {
         setup1();
