@@ -37,19 +37,15 @@ Dependencies:
 2. Select "Load project with Maven" when prompted by IntelliJ. 
 3. Run the complete test suite, the complete Decide class, or individual functions as you see fit.
 
-
 ### Continuous Integration
 Continuous Integration is set up using GitHub Actions and the provided Java with Maven Template.
 On each push or pull request to the main branch, the entire test suite will run in order to detect any errors as they arise.
 
 ## Documentation
-[Link to website hosting JavaDocs?](https://docs.google.com)  
-Where do we want to host the Javadocs?
-
+All Java code in the repository is complemented with JavaDocs, which can easily be generated within an IDE such as IntelliJ or Eclipse.
 
 ## Essence
-Answers the following questions in one paragraph, according to the Essence checklist:  
-In what state are you in? Why? What are obstacles to reach the next state?
+There is no obvious state in which we find ourselves in the essence way-of-working checklist, but rather that we recognize that our group span multiple states. The first state, “Principles Established”, is clearly passed, due to the “Meet your group”-assignment, where all of the points were discussed, however in the following states, some points are fulfilled where others are not. For example, in “Foundations Established”, we have selected key practices and tools, enough to let the work start, but perhaps the gaps that exists between practices needed and practices available haven’t been explicitly analyzed and understood. At the same time, multiple points from “In Use” and some from “In Place”, such as “Practices being used to do real work”, “Practices are being adapted to the team’s way of working”, and “Practices and tools are being used by the whole team to perform their work”, are fulfilled. This leads us to believe that we are mostly in the “In Use”-state, but are also transitioning out of the “Foundation Established”-state and in to the “In Place”-state. The obstacles of reaching further is actually analyzing and thinking about how the work proceeds, to continue with open communication and feedback, and to question if the practices and tools in place are working, and whether we can adopt new ones that improve the work experience within the group.
 
 ## Statement of Contributions
 **Emil:** LIC #1, #4, #12, readme, documentation, refactoring and reviewing PRs
