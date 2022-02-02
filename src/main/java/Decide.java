@@ -52,23 +52,51 @@ public class Decide {
     }
 
     /**
-     * Launch decision based on the FUV. Condition to launch requieres all elements in the FUV to be true from 0 <= i <= 14
+     * Main function for the program. Will set up all variables necessary for the program to run.
+     * Then call the decide() function that will return a boolean.
+     * Based on the return value of decide(), the program will output "yes"/"no",
+     * indicating whether the missile should launch.
+     *
+     */
+    public static void main(String[] args) {
+        // Set up test variables
+
+        // Create Decide object
+
+        // Call decide.decide();
+        // Should return: LAUNCH Final launch / no launch decision encoded as ”YES”, ”NO” on the standard output.
+    }
+
+    /**
+     * Launch decision based on the FUV. Condition to launch requires all elements in the FUV to be true from 0 <= i <= 14
      *
      * @return the launch decision
      */
     public boolean launch() {
-        decide();
-        for (int i = 0 ; i < FUV.length ; i++) {
-            if (!FUV[i]) {
+        for (boolean b : FUV) {
+            if (!b) {
                 return false;
             }
         }
         return true;
     }
 
-    public void decide() {
+    /**
+     * Checks if the input coordinates is between 2 and 100 (inclusive) points
+     * Calls other functions to do necessary calculations and gather information to decide
+     * to launch or not.
+     * @return true if it is decided to launch
+     */
+    public boolean decide() {
+        // Checks if POINTS is between 2 and 100 (inclusive) planar data points
+        if ((POINTS.length >= 2) && (POINTS.length <= 100))
+
+        // Calculates the PUM
         PUM();
+        // Calculates the FUV
         calculateFUV();
+
+        return launch();
     }
 
     /**
