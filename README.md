@@ -50,7 +50,7 @@ There is no obvious state in which we find ourselves in the essence way-of-worki
 ## Statement of Contributions
 **Emil:** LIC #1, #4, #12, readme, documentation, refactoring and reviewing PRs
 
-**Simon:**
+**Simon:** LIC3, LIC7, LIC10, LIC11, LIC14, Github Actions CI, End-to-End testcase, Small work on decide() function, Implement the FUV calculation, Reviewing PRs, Javadoc on the code 
 
 **Viktor:**
 
