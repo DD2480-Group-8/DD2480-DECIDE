@@ -207,10 +207,12 @@ public class Decide {
      */
     public void LIC0() {
         for (int i = 1; i < NUMPOINTS; i++) {
-            if (Math.sqrt(Math.pow(POINTS[i].XPOS - POINTS[i - 1].XPOS, 2) + Math.pow(POINTS[i].YPOS - POINTS[i - 1].YPOS, 2)) > PARAMETERS.LENGTH1) {
+            if (calculateDistance(POINTS[i], POINTS[i-1]) > PARAMETERS.LENGTH1) {
                 CMV[0] = true;
+                return;
             }
         }
+        CMV[0] = false;
     }
 
     /**
@@ -425,14 +427,8 @@ public class Decide {
         }
 
         for (int n = 0 ; n < NUMPOINTS-1-PARAMETERS.K_PTS ; n++) {
-            // Extract the coordinates of the two data points
-            double x1 = POINTS[n].XPOS;
-            double y1 = POINTS[n].YPOS;
-            double x2 = POINTS[n+1+PARAMETERS.K_PTS].XPOS;
-            double y2 = POINTS[n+1+PARAMETERS.K_PTS].YPOS;
-
             // Calculate the distance between the two data points
-            double distance = Math.sqrt(Math.pow(x1-x2, 2) + Math.pow(y1-y2, 2));
+            double distance = calculateDistance(POINTS[n], POINTS[n+1+PARAMETERS.K_PTS]);
 
             if (distance > PARAMETERS.LENGTH1) {
                 CMV[7] = true;
@@ -698,6 +694,23 @@ public class Decide {
     // HELPER FUNCTIONS
 
     /**
+     * Calculates the euclidian distance between two Coordinates.
+     * @param i Coordinate 1
+     * @param j Coordinate 2
+     * @return Euclidian distance between Coordinate 1 & 2
+     */
+    protected double calculateDistance(Coordinate i, Coordinate j) {
+         // Extract the coordinates of the two data points
+        double x1 = i.XPOS;
+        double y1 = i.YPOS;
+        double x2 = j.XPOS;
+        double y2 = j.YPOS;
+
+        // Calculate and return the distance between the two data points
+        return Math.sqrt(Math.pow(x1-x2, 2) + Math.pow(y1-y2, 2));
+    }
+
+    /**
      * Help function that finds three consecutive points and tests if their area is greater than the input area
      *
      * @param area Area to be compared against
@@ -757,10 +770,10 @@ public class Decide {
      * @param k Third Coordinate
      * @return The angle formed by the input Coordinates
      */
-    protected double checkAngle(Coordinate i, Coordinate j, Coordinate k){
+    protected double checkAngle(Coordinate i, Coordinate j, Coordinate k) {
         i = coordSubtract(i,j);
         k = coordSubtract(k,j);
-        if((i.XPOS == 0 && i.YPOS == 0) || (k.XPOS == 0 && k.YPOS == 0)){
+        if((i.XPOS == 0 && i.YPOS == 0) || (k.XPOS == 0 && k.YPOS == 0)) {
             return Math.PI;
         }
         double dotProduct = i.XPOS * k.XPOS + i.YPOS * k.YPOS;
@@ -774,7 +787,7 @@ public class Decide {
      * @param j Coordinate to subtract
      * @return The resulting Coordinate after the subtraction.
      */
-    protected Coordinate coordSubtract(Coordinate i, Coordinate j){
+    protected Coordinate coordSubtract(Coordinate i, Coordinate j) {
         Coordinate res = new Coordinate(0,0);
         res.XPOS = i.XPOS - j.XPOS;
         res.YPOS = i.YPOS - j.YPOS;
