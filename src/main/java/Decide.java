@@ -123,6 +123,17 @@ public class Decide {
             return false;
         }
 
+        runLIC();
+
+        // Calculates the PUM
+        PUM();
+        // Calculates the FUV
+        calculateFUV();
+
+        return launch();
+    }
+
+    public void runLIC() {
         //Run all LICs to calculate CMV
         LIC0();
         LIC1();
@@ -139,13 +150,6 @@ public class Decide {
         LIC12();
         LIC13();
         LIC14();
-
-        // Calculates the PUM
-        PUM();
-        // Calculates the FUV
-        calculateFUV();
-
-        return launch();
     }
 
     /**

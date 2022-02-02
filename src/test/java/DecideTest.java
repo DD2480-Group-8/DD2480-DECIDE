@@ -137,7 +137,10 @@ public class DecideTest {
         decide.LCM[0][1] = Decide.CONNECTORS.ANDD;
         decide.LCM[1][0] = Decide.CONNECTORS.ORR;
         decide.LCM[1][1] = Decide.CONNECTORS.ORR;
-        
+
+        // Calculate all LICs
+        decide.runLIC();
+
         //Calculates the PUM matrix
         decide.PUM();
 
