@@ -52,6 +52,107 @@ public class Decide {
     }
 
     /**
+     * Main function for the program. Will set up all variables necessary for the program to run.
+     * Then call the decide() function that will return a boolean.
+     * Based on the return value of decide(), the program will output "yes"/"no",
+     * indicating whether the missile should launch.
+     *
+     */
+    public static void main(String[] args) {
+        // Set up test variables and create Decide object
+        Decide decide = new Decide(2,
+                new Coordinate[]{new Coordinate(0, 2), new Coordinate(0, 3)},
+                new Parameters(
+                        1,
+                        1,
+                        1,
+                        1,
+                        1,
+                        1,
+                        1,
+                        1,
+                        1,
+                        1,
+                        1,
+                        1,
+                        1,
+                        1,
+                        1,
+                        1,
+                        1,
+                        1,
+                        1
+                ),
+                new Decide.CONNECTORS[15][15],
+                new boolean[15]);
+
+        // Change variables to make it work
+
+        // LAUNCH Final launch / no launch decision encoded as ”YES”, ”NO” on the standard output.
+        boolean launch = decide.decide();
+        if (launch) {
+            System.out.println("YES");
+        } else {
+            System.out.println("NO");
+        }
+    }
+
+    /**
+     * Launch decision based on the FUV. Condition to launch requires all elements in the FUV to be true from 0 <= i <= 14
+     *
+     * @return the launch decision
+     */
+    public boolean launch() {
+        for (boolean b : FUV) {
+            if (!b) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    /**
+     * Checks if the input coordinates is between 2 and 100 (inclusive) points
+     * Calls other functions to do necessary calculations and gather information to decide
+     * to launch or not.
+     * @return true if it is decided to launch
+     */
+    public boolean decide() {
+        // Checks if POINTS is between 2 and 100 (inclusive) planar data points
+        if ((POINTS.length >= 2) && (POINTS.length <= 100)) {
+            return false;
+        }
+
+        runLIC();
+
+        // Calculates the PUM
+        PUM();
+        // Calculates the FUV
+        calculateFUV();
+
+        return launch();
+    }
+
+    public void runLIC() {
+        //Run all LICs to calculate CMV
+        LIC0();
+        LIC1();
+        LIC2();
+        LIC3();
+        LIC4();
+        LIC5();
+        LIC6();
+        LIC7();
+        LIC8();
+        LIC9();
+        LIC10();
+        LIC11();
+        LIC12();
+        LIC13();
+        LIC14();
+    }
+
+    /**
      * Function that calculates and sets all values of the FUV
      */
     public void calculateFUV() {
@@ -80,23 +181,6 @@ public class Decide {
      * and LCM.
      */
     public void PUM(){
-
-        //Run all LICs to calculate CMV. Might want to move this later.
-        LIC0();
-        LIC1();
-        LIC2();
-        LIC3();
-        LIC4();
-        LIC5();
-        LIC6();
-        LIC7();
-        LIC8();
-        LIC9();
-        LIC10();
-        LIC11();
-        LIC12();
-        LIC13();
-        LIC14();
         
         //Calculate PUM values for each LIC pair using LCM matrix. 
         for(int i = 0; i < PUM.length; i++){
