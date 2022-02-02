@@ -52,7 +52,7 @@ There is no obvious state in which we find ourselves in the essence way-of-worki
 
 **Simon:** LIC3, LIC7, LIC10, LIC11, LIC14, Github Actions CI, End-to-End testcase, Small work on decide() function, Implement the FUV calculation, Reviewing PRs, Javadoc on the code 
 
-**Viktor:**
+**Viktor:** LIC2, LIC9, PUM matrix calculation, helper functions reducing duplicated code, refactoring and standardization, reviewing PRs. 
 
 **Joakim:** Setting up the environment (File structure, maven file, etc), LIC #0, #5, #8, Implemented end-to-end tests, Final implementation of decide function, Refactoring, reviewing PRs, bug fixing
 
