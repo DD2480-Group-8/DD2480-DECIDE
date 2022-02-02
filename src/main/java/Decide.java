@@ -22,7 +22,7 @@ public class Decide {
          * ANDD: Both CMV[i] and CMV[j] have to be true in order for launch to be approved.
          */
         ANDD
-    };
+    }
 
     int NUMPOINTS;
     Coordinate[] POINTS;
@@ -364,7 +364,7 @@ public class Decide {
         for (int i = 2; i < NUMPOINTS; i++) {
             
             // Check if these points don't fit in a circle of the radius 
-            if (checkCircle(POINTS[i], POINTS[i-1], POINTS[i-2])) {
+            if (checkCircle(POINTS[i], POINTS[i-1], POINTS[i-2], PARAMETERS.RADIUS1)) {
                 CMV[1] = true;
                 return; // only need one set of points to fulfill this, no need to continue the loop.
             }
@@ -598,9 +598,13 @@ public class Decide {
             return;
         }
         for (int i = 0; i < NUMPOINTS - PARAMETERS.A_PTS - PARAMETERS.B_PTS - 2; i++) {
-             
+
             // Check if these points don't fit in a circle of the radius
-            if (checkCircle(POINTS[i], POINTS[i+1], POINTS[i+2])) {
+            if (checkCircle(
+                    POINTS[i],
+                    POINTS[i+PARAMETERS.A_PTS+1],
+                    POINTS[i+PARAMETERS.B_PTS+2],
+                    PARAMETERS.RADIUS1)) {
                 CMV[8] = true;
                 return; // only need one set of points to fulfill this, no need to continue the loop.
             }
@@ -770,33 +774,20 @@ public class Decide {
         boolean con1 = false;
         boolean con2 = false;
         for (int i = 0 ; i < NUMPOINTS - PARAMETERS.A_PTS - PARAMETERS.B_PTS - 2 ; i++) {
-            // Extract the coordinates of the three data points
-            double x1 = POINTS[i].XPOS;
-            double y1 = POINTS[i].YPOS;
-            double x2 = POINTS[i + 1 + PARAMETERS.E_PTS].XPOS;
-            double y2 = POINTS[i + 1 + PARAMETERS.E_PTS].YPOS;
-            double x3 = POINTS[i + 2 + PARAMETERS.E_PTS + PARAMETERS.F_PTS].XPOS;
-            double y3 = POINTS[i + 2 + PARAMETERS.E_PTS + PARAMETERS.F_PTS].YPOS;
-
-            // Find the centroid.
-            Coordinate centroid = new Coordinate(
-                    (x1 + x2 + x3) / 3,
-                    (y1 + y2 + y3) / 3
-            );
-            // Check if any of the points have a distance to the centroid larger than RADIUS1.
-            if (
-                    (Math.sqrt(Math.pow(x1 - centroid.XPOS, 2) + Math.pow(y1 - centroid.YPOS, 2)) > PARAMETERS.RADIUS1)
-                            || (Math.sqrt(Math.pow(x2 - centroid.XPOS, 2) + Math.pow(y2 - centroid.YPOS, 2)) > PARAMETERS.RADIUS1)
-                            || (Math.sqrt(Math.pow(x3 - centroid.XPOS, 2) + Math.pow(y3 - centroid.YPOS, 2)) > PARAMETERS.RADIUS1)
-            ){
+            // Check if any set of points don't fit in a circle of RADIUS1
+            if (checkCircle(
+                    POINTS[i],
+                    POINTS[i+PARAMETERS.A_PTS+1],
+                    POINTS[i+PARAMETERS.B_PTS+2],
+                    PARAMETERS.RADIUS1) && !con1) {
                 con1 = true;
             }
-            // Check if all the points have a distance to the centroid smaller than RADIUS2.
-            if (
-                    (Math.sqrt(Math.pow(x1 - centroid.XPOS, 2) + Math.pow(y1 - centroid.YPOS, 2)) < PARAMETERS.RADIUS2)
-                            && (Math.sqrt(Math.pow(x2 - centroid.XPOS, 2) + Math.pow(y2 - centroid.YPOS, 2)) < PARAMETERS.RADIUS2)
-                            && (Math.sqrt(Math.pow(x3 - centroid.XPOS, 2) + Math.pow(y3 - centroid.YPOS, 2)) < PARAMETERS.RADIUS2)
-            ){
+            // Check if any set of points fit in a circle of RADIUS2
+            if (!checkCircle(
+                    POINTS[i],
+                    POINTS[i+PARAMETERS.A_PTS+1],
+                    POINTS[i+PARAMETERS.B_PTS+2],
+                    PARAMETERS.RADIUS2) && !con2) {
                 con2 = true;
             }
             if (con1 && con2){
@@ -868,21 +859,108 @@ public class Decide {
      * @param k thirs Coordinate
      * @return True if the points do not fit inside or on a circle of area PARAMETERS.RADIUS1, false otherwise
      */
-    protected boolean checkCircle(Coordinate i, Coordinate j, Coordinate k) {
-        Coordinate centroid = new Coordinate(
-                        (i.XPOS + j.XPOS + k.XPOS) / 3,
-                        (i.YPOS + j.YPOS + k.YPOS) / 3
-                );
-        
-            if (
-                (Math.sqrt(Math.pow(i.XPOS - centroid.XPOS, 2) + Math.pow(i.YPOS - centroid.YPOS, 2)) > PARAMETERS.RADIUS1)
-                        || (Math.sqrt(Math.pow(j.XPOS - centroid.XPOS, 2) + Math.pow(j.YPOS - centroid.YPOS, 2)) > PARAMETERS.RADIUS1)
-                        || (Math.sqrt(Math.pow(k.XPOS - centroid.XPOS, 2) + Math.pow(k.YPOS - centroid.YPOS, 2)) > PARAMETERS.RADIUS1)
-            ){
+    protected boolean checkCircle(Coordinate i, Coordinate j, Coordinate k, double radius) {
+        Coordinate[][] pairs = new Coordinate[][] {{i,j,k},{i,k,j},{j,k,i}};
+        Coordinate mec_center = new Coordinate(0,0);
+        double mec_radius = Integer.MAX_VALUE;
+        //iterate through each pair of points.
+        for(int n=0; n<3; n++){
+            Coordinate a = pairs[n][0];
+            Coordinate b = pairs[n][1];
+            Coordinate c = pairs[n][2];
+            // Check if their distance is less than radius * 2.
+            // If more, they do not intersect
+            if(calculateDistance(a, b) > radius*2){
                 return true;
-            }else {
-                return false;
+            }else{
+                //form smallest circle with a and b, check if c is inside.
+                mec_center.XPOS = (a.XPOS + b.XPOS) / 2.0;
+                mec_center.YPOS = (a.YPOS + b.YPOS) / 2.0;
+                double temp_radius = calculateDistance(a, b) / 2.0;
+                //update mec if radius is smaller, and c is enclosed.
+                if((temp_radius < mec_radius) && (calculateDistance(mec_center, c) <= temp_radius)) {
+                    mec_radius = temp_radius;
+                }
             }
+        }
+        //compare mec with circle intersecting all 3 points
+        double r = findCircleRadius(i,j,k);
+        if(r < mec_radius) {
+            mec_radius = r;
+        }
+        //return false if mec < radius, else true.
+        return !(mec_radius <= radius);
+    }
+
+    /**
+     * Help function that finds the radius of a circle intersecting 3 points
+     *
+     * @param c1 First coordinate
+     * @param c2 Second coordinate
+     * @param c3 Third coordinate
+     * @return The radius of the circle intersecting 3 points
+     */
+    protected double findCircleRadius(Coordinate c1, Coordinate c2, Coordinate c3)
+    {
+        double x1 = c1.XPOS;
+        double y1 = c1.YPOS;
+        double x2 = c2.XPOS;
+        double y2 = c2.YPOS;
+        double x3 = c3.XPOS;
+        double y3 = c3.YPOS;
+
+        double x12 = x1 - x2;
+        double x13 = x1 - x3;
+
+        double y12 = y1 - y2;
+        double y13 = y1 - y3;
+
+        double y31 = y3 - y1;
+        double y21 = y2 - y1;
+
+        double x31 = x3 - x1;
+        double x21 = x2 - x1;
+
+        // x1^2 - x3^2
+        double sx13 = Math.pow(x1, 2) -
+                Math.pow(x3, 2);
+
+        // y1^2 - y3^2
+        double sy13 = Math.pow(y1, 2) -
+                Math.pow(y3, 2);
+
+        double sx21 = Math.pow(x2, 2) -
+                Math.pow(x1, 2);
+
+        double sy21 = Math.pow(y2, 2) -
+                Math.pow(y1, 2);
+
+        double f = ((sx13) * (x12)
+                + (sy13) * (x12)
+                + (sx21) * (x13)
+                + (sy21) * (x13))
+                / (2 * ((y31) * (x12) - (y21) * (x13)));
+        double g = ((sx13) * (y12)
+                + (sy13) * (y12)
+                + (sx21) * (y13)
+                + (sy21) * (y13))
+                / (2 * ((x31) * (y12) - (x21) * (y13)));
+
+        double c = -(double)Math.pow(x1, 2) - Math.pow(y1, 2) -
+                2 * g * x1 - 2 * f * y1;
+
+        // eqn of circle be x^2 + y^2 + 2*g*x + 2*f*y + c = 0
+        // where centre is (h = -g, k = -f) and radius r
+        // as r^2 = h^2 + k^2 - c
+        double h = -g;
+        double k = -f;
+        double sqr_of_r = h * h + k * k - c;
+
+        // r is the radius
+//        DecimalFormat df = new DecimalFormat("#.#####");
+//        System.out.println("Centre = (" + h + "," + k + ")");
+//        System.out.println("Radius = " + df.format(r));
+        return Math.sqrt(sqr_of_r);
     }
 
     /**
