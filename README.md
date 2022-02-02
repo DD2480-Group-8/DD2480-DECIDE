@@ -54,7 +54,8 @@ In what state are you in? Why? What are obstacles to reach the next state?
 ## Statement of Contributions
 | Emil        | Simon    | Viktor | Joakim | Jovan        |
 |-------------|----------|--------|--------|--------------|
-| Insert text | in these | cells  | before | presentation |
-|             |          |        |        |              |
-|             |          |        |        |              |
-|             |          |        |        |              |
+| Insert text | in these | cells  | Setting up the environment (File structure, maven file, etc) | presentation |
+|             |          |        | LIC #0, #5, #8       |              |
+|             |          |        | Implemented end-to-end tests       |              |
+|             |          |        | Final implementation of decide function       |              |
+|             |          |        | Refactoring, reviewing PRs, bug fixing       |              |
