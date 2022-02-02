@@ -1505,12 +1505,17 @@ public class DecideTest {
         Assert.assertEquals(Math.sqrt(2.0), decide.calculateDistance(i,k), 0.01);
     }
 
-    /**
-      * Tests that the function checkcircle retruns the correct values
+       /**
+      * Tests that the function checkcircle is correctly executed and returns correct.
       */
     @Test
     public void checkCircleTest(){
-        //TO BE IMPLEMENTED
+        setup1();
+        Coordinate i = new Coordinate(0,0);
+        Coordinate j = new Coordinate(2,0);
+        Coordinate k = new Coordinate(1,1.1);
+            
+        Assert.assertTrue(decide.checkCircle(i,j,k,1));  
     }
 
     /**
