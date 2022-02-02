@@ -56,4 +56,4 @@ There is no obvious state in which we find ourselves in the essence way-of-worki
 
 **Joakim:** Setting up the environment (File structure, maven file, etc), LIC #0, #5, #8, Implemented end-to-end tests, Final implementation of decide function, Refactoring, reviewing PRs, bug fixing
 
-**Jovan:**
+**Jovan:** LIC6, LIC13, bug fixes, refactoring
