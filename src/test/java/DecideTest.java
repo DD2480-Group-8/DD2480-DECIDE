@@ -1488,8 +1488,33 @@ public class DecideTest {
         Assert.assertFalse(decide.CMV[14]);
     }
 
-     /**
-     * Test that help function calculateArea is correctly executed and returns correct.
+    /**
+      * Tests that the function calsulateDistance retruns the correct values
+      */
+    @Test
+    public void calculateDistanceTest(){
+        setup1();
+
+        //Sets up three Coordinates used in testing
+        Coordinate i = new Coordinate(0,0);
+        Coordinate j = new Coordinate(0,2);
+        Coordinate k = new Coordinate(1,1);
+
+        //checks that the distances between i and the other points are correct 
+        Assert.assertEquals(2.0, decide.calculateDistance(i,j), 0.01);
+        Assert.assertEquals(Math.sqrt(2.0), decide.calculateDistance(i,k), 0.01);
+    }
+
+    /**
+      * Tests that the function checkcircle retruns the correct values
+      */
+    @Test
+    public void checkCircleTest(){
+        //TO BE IMPLEMENTED
+    }
+
+    /**
+     * Tests that help function calculateArea is correctly executed and returns correct.
      */
     @Test
     public void calculateAreaTest() {
@@ -1504,7 +1529,7 @@ public class DecideTest {
     }
 
     /**
-     * Test that help function threePointsAreaComparison executes correctly and returns true
+     * Tests that help function threePointsAreaComparison executes correctly and returns true
      */
     @Test
     public void threePointsAreaComparisonTest() {
