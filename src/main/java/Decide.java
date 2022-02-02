@@ -206,11 +206,17 @@ public class Decide {
      * (0 ≤ LENGTH1)
      */
     public void LIC0() {
+        if(PARAMETERS.LENGTH1 < 0){
+            CMV[0] = false;
+            return;
+        }
         for (int i = 1; i < NUMPOINTS; i++) {
-            if (Math.sqrt(Math.pow(POINTS[i].XPOS - POINTS[i - 1].XPOS, 2) + Math.pow(POINTS[i].YPOS - POINTS[i - 1].YPOS, 2)) > PARAMETERS.LENGTH1) {
+            if (calculateDistance(POINTS[i], POINTS[i-1]) > PARAMETERS.LENGTH1) {
                 CMV[0] = true;
+                return;
             }
         }
+        CMV[0] = false;
     }
 
     /**
@@ -220,22 +226,19 @@ public class Decide {
      * from the center.
      */
     public void LIC1() {
+        if(PARAMETERS.RADIUS1 < 0){
+            CMV[1] = false;
+            return; 
+        }
         for (int i = 2; i < NUMPOINTS; i++) {
-            // Find the centroid.
-            Coordinate centroid = new Coordinate(
-                    (POINTS[i].XPOS + POINTS[i-1].XPOS + POINTS[i-2].XPOS) / 3,
-                    (POINTS[i].YPOS + POINTS[i-1].YPOS + POINTS[i-2].YPOS) / 3
-            );
-            // Check if any of the points have a distance to the centroid larger than the radius.
-            if (
-                    (Math.sqrt(Math.pow(POINTS[i].XPOS - centroid.XPOS, 2) + Math.pow(POINTS[i].YPOS - centroid.YPOS, 2)) > PARAMETERS.RADIUS1)
-                            || (Math.sqrt(Math.pow(POINTS[i-1].XPOS - centroid.XPOS, 2) + Math.pow(POINTS[i-1].YPOS - centroid.YPOS, 2)) > PARAMETERS.RADIUS1)
-                            || (Math.sqrt(Math.pow(POINTS[i-2].XPOS - centroid.XPOS, 2) + Math.pow(POINTS[i-2].YPOS - centroid.YPOS, 2)) > PARAMETERS.RADIUS1)
-            ) {
+            
+            // Check if these points don't fit in a circle of the radius 
+            if (checkCircle(POINTS[i], POINTS[i-1], POINTS[i-2])) {
                 CMV[1] = true;
-                break; // only need one set of points to fulfill this, no need to continue the loop.
+                return; // only need one set of points to fulfill this, no need to continue the loop.
             }
         }
+        CMV[1] = false;
     }
 
     /** 
@@ -244,8 +247,12 @@ public class Decide {
     * last point (or both) coincides with the vertex, the angle is undefined and the LIC is not satisfied by those three points.
     */
     public void LIC2(){
-        if(NUMPOINTS < 3){
-            CMV[2] = false;
+        if(     
+                PARAMETERS.EPSILON < 0 
+                || PARAMETERS.EPSILON >= Math.PI 
+                || NUMPOINTS < 3
+        ) {
+            CMV[1] = false;
             return;
         }
         for(int i = 0; i < NUMPOINTS-2; i++){
@@ -326,6 +333,7 @@ public class Decide {
                 return;
             }
         }
+        CMV[4] = false;
     }
 
     /**
@@ -338,9 +346,10 @@ public class Decide {
             double diff = POINTS[i].XPOS - POINTS[i-1].XPOS;
             if (diff < 0) {
                 CMV[5] = true;
-                break;
+                return;
             }
         }
+        CMV[5] = false;
     }
 
     /**
@@ -353,7 +362,11 @@ public class Decide {
      (3 < N PTS < NUMPOINTS), (0 < DIST)
      */
     public void LIC6() {
-        if (NUMPOINTS < 3 || PARAMETERS.N_PTS < 3 || PARAMETERS.DIST <= 0) {
+        if (
+                NUMPOINTS < 3 
+                || PARAMETERS.N_PTS < 3 
+                || PARAMETERS.DIST <= 0
+        ) {
             CMV[6] = false;
             return;
         }
@@ -425,14 +438,8 @@ public class Decide {
         }
 
         for (int n = 0 ; n < NUMPOINTS-1-PARAMETERS.K_PTS ; n++) {
-            // Extract the coordinates of the two data points
-            double x1 = POINTS[n].XPOS;
-            double y1 = POINTS[n].YPOS;
-            double x2 = POINTS[n+1+PARAMETERS.K_PTS].XPOS;
-            double y2 = POINTS[n+1+PARAMETERS.K_PTS].YPOS;
-
             // Calculate the distance between the two data points
-            double distance = Math.sqrt(Math.pow(x1-x2, 2) + Math.pow(y1-y2, 2));
+            double distance = calculateDistance(POINTS[n], POINTS[n+1+PARAMETERS.K_PTS]);
 
             if (distance > PARAMETERS.LENGTH1) {
                 CMV[7] = true;
@@ -450,24 +457,25 @@ public class Decide {
      * A PTS+B PTS ≤ (NUMPOINTS−3)
      */
     public void LIC8() {
-        if (NUMPOINTS >= 5) {
-            for (int i = 0; i < NUMPOINTS - PARAMETERS.A_PTS - PARAMETERS.B_PTS - 2; i++) {
-                // Find the centroid.
-                Coordinate centroid = new Coordinate(
-                        (POINTS[i].XPOS + POINTS[i+PARAMETERS.A_PTS+1].XPOS + POINTS[i+PARAMETERS.A_PTS+PARAMETERS.B_PTS+2].XPOS) / 3,
-                        (POINTS[i].YPOS + POINTS[i+PARAMETERS.A_PTS+1].YPOS + POINTS[i+PARAMETERS.A_PTS+PARAMETERS.B_PTS+2].YPOS) / 3
-                );
-                // Check if any of the points have a distance to the centroid larger than the radius.
-                if (
-                        (Math.sqrt(Math.pow(POINTS[i].XPOS - centroid.XPOS, 2) + Math.pow(POINTS[i].YPOS - centroid.YPOS, 2)) > PARAMETERS.RADIUS1)
-                                || (Math.sqrt(Math.pow(POINTS[i+PARAMETERS.A_PTS+1].XPOS - centroid.XPOS, 2) + Math.pow(POINTS[i+PARAMETERS.A_PTS+1].YPOS - centroid.YPOS, 2)) > PARAMETERS.RADIUS1)
-                                || (Math.sqrt(Math.pow(POINTS[i+PARAMETERS.A_PTS+PARAMETERS.B_PTS+2].XPOS - centroid.XPOS, 2) + Math.pow(POINTS[i+PARAMETERS.A_PTS+PARAMETERS.B_PTS+2].YPOS - centroid.YPOS, 2)) > PARAMETERS.RADIUS1)
-                ) {
-                    CMV[8] = true;
-                    break; // only need one set of points to fulfill this, no need to continue the loop.
-                }
-            }
+        if (
+                NUMPOINTS < 5
+                || PARAMETERS.A_PTS < 1
+                || PARAMETERS.B_PTS < 1
+                || PARAMETERS.A_PTS + PARAMETERS.B_PTS > NUMPOINTS - 3
+        ) {
+            CMV[8] = false;
+            return;
         }
+        for (int i = 0; i < NUMPOINTS - PARAMETERS.A_PTS - PARAMETERS.B_PTS - 2; i++) {
+             
+            // Check if these points don't fit in a circle of the radius
+            if (checkCircle(POINTS[i], POINTS[i+1], POINTS[i+2])) {
+                CMV[8] = true;
+                return; // only need one set of points to fulfill this, no need to continue the loop.
+            }
+            
+        }
+        CMV[8] = false;
     }
 
     /**
@@ -479,7 +487,15 @@ public class Decide {
      * not satisfied by those three points. When NUMPOINTS < 5, the condition is not met.
      */
     public void LIC9(){
-        if(NUMPOINTS < 5 || POINTS.length < 5){
+        if(
+                NUMPOINTS < 5 
+                || POINTS.length < 5
+                || PARAMETERS.EPSILON < 0 
+                || PARAMETERS.EPSILON >= Math.PI 
+                || PARAMETERS.C_PTS < 1
+                || PARAMETERS.D_PTS < 1
+                ||  PARAMETERS.C_PTS + PARAMETERS.D_PTS > NUMPOINTS - 3
+        ){
             CMV[9] = false;
             return;
         }
@@ -529,8 +545,8 @@ public class Decide {
     public void LIC11() {
         if (
                 (NUMPOINTS < 3)
-                        || (PARAMETERS.G_PTS < 1)
-                        || (PARAMETERS.G_PTS > NUMPOINTS-2)
+                || (PARAMETERS.G_PTS < 1)
+                || (PARAMETERS.G_PTS > NUMPOINTS-2)
         ) {
             CMV[11] = false;
             return;
@@ -566,9 +582,9 @@ public class Decide {
         // Check input conditions
         if (
                 (NUMPOINTS < 3)
-                        || (PARAMETERS.LENGTH1 < 0) // I'm assuming a length cannot be negative.
-                        || (PARAMETERS.LENGTH2 < 0)
-                        || (PARAMETERS.K_PTS < 0) // we have to have 2 endpoints and at least k points in between.
+                || (PARAMETERS.LENGTH1 < 0) // I'm assuming a length cannot be negative.
+                || (PARAMETERS.LENGTH2 < 0)
+                || (PARAMETERS.K_PTS < 0) // we have to have 2 endpoints and at least k points in between.
         ) {
             CMV[12] = false;
             return;
@@ -599,8 +615,8 @@ public class Decide {
                 CMV[12] = true;
                 return;
             }
-
         }
+        CMV[12] = false;
     }
 
     /**
@@ -615,7 +631,7 @@ public class Decide {
      0 < RADIUS2
      */
     public void LIC13() {
-        if (NUMPOINTS < 5) {
+        if (NUMPOINTS < 5 || PARAMETERS.RADIUS2 < 0) {
             CMV[13] = false;
             return;
         }
@@ -698,6 +714,47 @@ public class Decide {
     // HELPER FUNCTIONS
 
     /**
+     * Calculates the euclidian distance between two Coordinates.
+     * @param i Coordinate 1
+     * @param j Coordinate 2
+     * @return Euclidian distance between Coordinate 1 & 2
+     */
+    protected double calculateDistance(Coordinate i, Coordinate j) {
+         // Extract the coordinates of the two data points
+        double x1 = i.XPOS;
+        double y1 = i.YPOS;
+        double x2 = j.XPOS;
+        double y2 = j.YPOS;
+
+        // Calculate and return the distance between the two data points
+        return Math.sqrt(Math.pow(x1-x2, 2) + Math.pow(y1-y2, 2));
+    }
+    
+    /**
+     * Checks if three Coordinates fit do not fit inside or on a circle of radius PARAMETERS.RADIUS1.
+     * @param i first Coordinate
+     * @param j second Coordinate
+     * @param k thirs Coordinate
+     * @return True if the points do not fit inside or on a circle of area PARAMETERS.RADIUS1, false otherwise
+     */
+    protected boolean checkCircle(Coordinate i, Coordinate j, Coordinate k) {
+        Coordinate centroid = new Coordinate(
+                        (i.XPOS + j.XPOS + k.XPOS) / 3,
+                        (i.YPOS + j.YPOS + k.YPOS) / 3
+                );
+        
+            if (
+                (Math.sqrt(Math.pow(i.XPOS - centroid.XPOS, 2) + Math.pow(i.YPOS - centroid.YPOS, 2)) > PARAMETERS.RADIUS1)
+                        || (Math.sqrt(Math.pow(j.XPOS - centroid.XPOS, 2) + Math.pow(j.YPOS - centroid.YPOS, 2)) > PARAMETERS.RADIUS1)
+                        || (Math.sqrt(Math.pow(k.XPOS - centroid.XPOS, 2) + Math.pow(k.YPOS - centroid.YPOS, 2)) > PARAMETERS.RADIUS1)
+            ){
+                return true;
+            }else {
+                return false;
+            }
+    }
+
+    /**
      * Help function that finds three consecutive points and tests if their area is greater than the input area
      *
      * @param area Area to be compared against
@@ -757,10 +814,10 @@ public class Decide {
      * @param k Third Coordinate
      * @return The angle formed by the input Coordinates
      */
-    protected double checkAngle(Coordinate i, Coordinate j, Coordinate k){
+    protected double checkAngle(Coordinate i, Coordinate j, Coordinate k) {
         i = coordSubtract(i,j);
         k = coordSubtract(k,j);
-        if((i.XPOS == 0 && i.YPOS == 0) || (k.XPOS == 0 && k.YPOS == 0)){
+        if((i.XPOS == 0 && i.YPOS == 0) || (k.XPOS == 0 && k.YPOS == 0)) {
             return Math.PI;
         }
         double dotProduct = i.XPOS * k.XPOS + i.YPOS * k.YPOS;
@@ -774,7 +831,7 @@ public class Decide {
      * @param j Coordinate to subtract
      * @return The resulting Coordinate after the subtraction.
      */
-    protected Coordinate coordSubtract(Coordinate i, Coordinate j){
+    protected Coordinate coordSubtract(Coordinate i, Coordinate j) {
         Coordinate res = new Coordinate(0,0);
         res.XPOS = i.XPOS - j.XPOS;
         res.YPOS = i.YPOS - j.YPOS;
