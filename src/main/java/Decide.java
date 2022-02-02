@@ -59,12 +59,42 @@ public class Decide {
      *
      */
     public static void main(String[] args) {
-        // Set up test variables
+        // Set up test variables and create Decide object
+        Decide decide = new Decide(2,
+                new Coordinate[]{new Coordinate(0, 2), new Coordinate(0, 3)},
+                new Parameters(
+                        1,
+                        1,
+                        1,
+                        1,
+                        1,
+                        1,
+                        1,
+                        1,
+                        1,
+                        1,
+                        1,
+                        1,
+                        1,
+                        1,
+                        1,
+                        1,
+                        1,
+                        1,
+                        1
+                ),
+                new Decide.CONNECTORS[15][15],
+                new boolean[15]);
 
-        // Create Decide object
+        // Change variables to make it work
 
-        // Call decide.decide();
-        // Should return: LAUNCH Final launch / no launch decision encoded as ”YES”, ”NO” on the standard output.
+        // LAUNCH Final launch / no launch decision encoded as ”YES”, ”NO” on the standard output.
+        boolean launch = decide.decide();
+        if (launch) {
+            System.out.println("YES");
+        } else {
+            System.out.println("NO");
+        }
     }
 
     /**
@@ -89,7 +119,26 @@ public class Decide {
      */
     public boolean decide() {
         // Checks if POINTS is between 2 and 100 (inclusive) planar data points
-        if ((POINTS.length >= 2) && (POINTS.length <= 100))
+        if ((POINTS.length >= 2) && (POINTS.length <= 100)) {
+            return false;
+        }
+
+        //Run all LICs to calculate CMV
+        LIC0();
+        LIC1();
+        LIC2();
+        LIC3();
+        LIC4();
+        LIC5();
+        LIC6();
+        LIC7();
+        LIC8();
+        LIC9();
+        LIC10();
+        LIC11();
+        LIC12();
+        LIC13();
+        LIC14();
 
         // Calculates the PUM
         PUM();
@@ -128,23 +177,6 @@ public class Decide {
      * and LCM.
      */
     public void PUM(){
-
-        //Run all LICs to calculate CMV. Might want to move this later.
-        LIC0();
-        LIC1();
-        LIC2();
-        LIC3();
-        LIC4();
-        LIC5();
-        LIC6();
-        LIC7();
-        LIC8();
-        LIC9();
-        LIC10();
-        LIC11();
-        LIC12();
-        LIC13();
-        LIC14();
         
         //Calculate PUM values for each LIC pair using LCM matrix. 
         for(int i = 0; i < PUM.length; i++){
