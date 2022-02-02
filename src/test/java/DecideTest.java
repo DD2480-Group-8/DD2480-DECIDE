@@ -1245,7 +1245,7 @@ public class DecideTest {
         };
         decide.NUMPOINTS = decide.POINTS.length;
         params.RADIUS1 = 1;
-        params.RADIUS2 = 1;
+        params.RADIUS2 = 0.9;
 
         // Executes method
         decide.LIC13();
