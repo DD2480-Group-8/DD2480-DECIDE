@@ -1,4 +1,3 @@
-import java.beans.Transient;
 import java.util.Arrays;
 
 import org.junit.Assert;
@@ -8,7 +7,7 @@ import org.junit.Test;
 /**
  * DecideTest Class
  * Contains Unit tests and prefix values for all methods inside to class Decide.
- * All methods is tested with positive/negative test cases, as well as some tests for invalid parameters.
+ * All methods are tested with positive/negative test cases, as well as some tests for invalid parameters.
  */
 public class DecideTest {
     Parameters params;
@@ -86,6 +85,12 @@ public class DecideTest {
 
     /**
      * Test for FUV function. Will test both positive and negative cases.
+     *
+     * Positive test: the PUV and row 0 of the PUM will be set to
+     * true and then the FUV will be calculated, and this will set FUV[0] to true.
+     *
+     * Negative test: Sets one of the PUM on row 0 to false. This will set
+     * FUV[0] to false
      */
     @Test
     public void FUVTest() {
@@ -111,7 +116,11 @@ public class DecideTest {
     
     /**
      * A simple test for the PUM function. Creates a Decide instance where the first LIC is true,
-     * the second is false, and where only the first two LIC are used. 
+     * the second is false, and where only the first two LIC are used.
+     * Tests that the PUM values are
+     * |T|F|...
+     * |F|T|...
+     * ...
      */
     @Test
     public void PUMTest(){
@@ -152,7 +161,10 @@ public class DecideTest {
     }
 
     /**
-     * Asserts that a false case for LIC0 is indeed false.
+     * Asserts that a false case for LIC0 is indeed false, because there does not exist at least one set of two
+     * consecutive data points that are a distance greater than the length, LENGTH1, apart.
+     *
+     * Coordinates (0,2) and (0,3) is not further than 1 unit away from each other
      */
     @Test
     public void LIC0TestFalse() {
@@ -163,6 +175,10 @@ public class DecideTest {
 
     /**
      * Asserts that a true case for LIC0 is indeed true.
+     * LIC0 is true if there exists at least one set of two consecutive data points that are a distance greater than
+     * the length, LENGTH1, apart.
+     *
+     * Coordinates (10,2) and (0,2) is further than 1 unit away from each other
      */
     @Test
     public void LIC0TestTrue() {
@@ -174,7 +190,10 @@ public class DecideTest {
 
     /**
      * Asserts that a false case for LIC1 is false.
-     * LIC1 is true if there exists no three points that can be contained within a circle of radius RADIUS1.
+     * LIC1 is false if there exists three points that can be contained within a circle of radius RADIUS1.
+     * The three points can be contained in a circle of radius 1.
+     *
+     * Coordinates (1,1),(1,1) and (1,0) can be contained within 1 unit
      */
     @Test
     public void LIC1TestFalse() {
@@ -192,6 +211,7 @@ public class DecideTest {
     /**
      * Asserts that a true case for LIC1 is true.
      * LIC1 is true if there exists no three points that can be contained within a circle of radius RADIUS1.
+     * The three points, (0,0), (0,10), (0,0), are too far apart to be contained in a circle of radius 1.
      */
     @Test
     public void LIC1TestTrue() {
@@ -208,7 +228,10 @@ public class DecideTest {
     }
 
     /**
-    * Tests a negative case for the LIC2 function.
+     * Tests a negative case for the LIC2 function, where there does not exist at least one set of three consecutive
+     * data points which form an angle such that:
+     * angle < (PI-EPSILON)
+     * The three test points form a maximum angle of pi/2, which exceeds pi/8, therefore throwing a negative case
     */
     @Test
     public void LIC2TestFalse() {
@@ -225,7 +248,11 @@ public class DecideTest {
     }
 
     /**
-    * Tests a positive case for the LIC2 function.
+    * Tests a positive case for the LIC2 function
+     * There exists at least one set of three consecutive data points which form an angle such that:
+     * angle < (PI-EPSILON)
+     * The three test points form a minimum angle of arctan(1/3) which is 0.321radians, which is less than PI-EPSILON,
+     * which is 0.4radians, therefore throwing a negative case
     */
     @Test
     public void LIC2TestTrue() {
@@ -244,6 +271,9 @@ public class DecideTest {
 
     /**
      * Tests the LIC3 method that it executes correctly and sets CMV[3] to true.
+     *
+     * The area between points (0,0), (2,0) and (0,2) will be 2 area units, which is
+     * greater than 1.
      */
     @Test
     public void LIC3PositiveTest() {
@@ -262,6 +292,9 @@ public class DecideTest {
     /**
      * Tests the LIC3 method that it executes correctly and sets CMV[3] to false,
      * due to the area being too small.
+     *
+     * The area between points (0,0), (1,0) and (0,1) will be 0.5 area units, which is
+     * not greater than 1.
      */
     @Test
     public void LIC3NegativeTest() {
@@ -298,6 +331,8 @@ public class DecideTest {
     /**
      * Asserts that a true case for LIC4 is true.
      * LIC4 is true if Q_PTS consecutive points are in more than quads different quadrants.
+     *
+     * Four points lay in the four different quadrants, with is more than three quadrants.
      */
     @Test
     public void LIC4TestTrue() {
@@ -341,6 +376,10 @@ public class DecideTest {
      * Asserts that an invalid case for LIC4 sets CMV[4] to false.
      * LIC4 is true if Q_PTS consecutive points are in more than quads different quadrants.
      * (2 ≤ Q PTS ≤ NUMPOINTS), (1 ≤ QUADS ≤ 3)
+     *
+     * QUADS is 0, which is invalid.
+     * QUADS is 4, which is invalid
+     * Q_PTS is greater than NUMPOINTS, which is invalid
      */
     @Test
     public void LIC4TestInvalidInputs() {
@@ -376,8 +415,9 @@ public class DecideTest {
 
     /**
      * Asserts that a false case for LIC5 is false.
-     * LIC5 is true if there exists at least one set of two consecutive data points, (X[i],Y[i]) and (X[j],Y[j]), such
-     * that X[j] - X[i] < 0. (where i = j-1)
+     * LIC5 is false if there does not exist at least one set of two consecutive data points, (X[i],Y[i]) and (X[j],Y[j]), such
+     * that X[j] - X[i] < 0. (where i = j-1).
+     * For this test, X[j] - X[i] = 0 - 0 = 0, returning a false case
      */
     @Test
     public void LIC5TestFalse() {
@@ -389,7 +429,8 @@ public class DecideTest {
     /**
      * Asserts that a true case for LIC5 is true.
      * LIC5 is true if there exists at least one set of two consecutive data points, (X[i],Y[i]) and (X[j],Y[j]), such
-     * that X[j] - X[i] < 0. (where i = j-1)
+     * that X[j] - X[i] < 0. (where i = j-1).
+     * For this test, X[j] - X[i] = 0 - 10 = -10, returning a true case
      */
     @Test
     public void LIC5TestTrue() {
@@ -399,8 +440,12 @@ public class DecideTest {
 
     }
 
-        /**
-     * Tests the LIC6 method that it executes correctly and sets CMV[6] to true.
+    /**
+     * Asserts that LIC6 sets CMV[6] to true in a positive test case.
+     * LIC6 is true if there exists N_PTS>2 consecutive points where one of the points is located
+     * further than or DIST>0 away from the line connecting the first and last of these points.
+     * In this case all points except the second one are on the line y=1. The second point's
+     * y value is 3, and will therefore be further than or DIST (1) away.
      */
     @Test
     public void LIC6PositiveTest() {
@@ -426,7 +471,11 @@ public class DecideTest {
     }
 
     /**
-     * Tests the LIC6 method that it executes correctly and sets CMV[6] to true when first and last points of these N_PTS are identical.
+     * Asserts that LIC6 sets CMV[6] to true in a positive test case.
+     * LIC6 is true if there exists N_PTS>2 consecutive points where one of the points is located
+     * further than or DIST>0 away from the line connecting the first and last of these points.
+     * In this case all points except the second one are on the line y=1. The second point's
+     * y value is 3, and will therefore be further than or DIST (2) away.
      */
     @Test
     public void LIC6PositiveTest2() {
@@ -452,7 +501,10 @@ public class DecideTest {
     }
 
     /**
-     * Tests the LIC6 method that it executes correctly and sets CMV[6] to false.
+     * Asserts that LIC6 sets CMV[6] to true in a positive test case.
+     * LIC6 is true if there exists N_PTS>2 consecutive points where one of the points is located
+     * further than or DIST>0 away from the line connecting the first and last of these points.
+     * In this case all points are on the line y=1, and no point should therefore be further than DIST (2) away.
      */
     @Test
     public void LIC6NegativeTest() {
@@ -478,7 +530,10 @@ public class DecideTest {
     }
 
     /**
-     * Tests the LIC6 method that it executes correctly and sets CMV[6] to false due to NUMPOINTS<3.
+     * Asserts that LIC6 sets CMV[6] to true in a positive test case.
+     * LIC6 is true if there exists N_PTS>2 consecutive points where one of the points is located
+     * further than or DIST>0 away from the line connecting the first and last of these points.
+     * In this case the parameter N_PTS<3, and therefore the LIC should be false.
      */
     @Test
     public void LIC6NegativeTest2() {
@@ -502,38 +557,15 @@ public class DecideTest {
         // Asserts that it sets CMV[6] to true
         Assert.assertFalse(decide.CMV[6]);
     }
-    
+
     /**
-     * Tests the LIC6 method that it executes correctly and sets CMV[6] to false due to PARAMETERS.N_PTS<3.
+     * Asserts that LIC6 sets CMV[6] to true in a positive test case.
+     * LIC6 is true if there exists N_PTS>2 consecutive points where one of the points is located
+     * further than or DIST>0 away from the line connecting the first and last of these points.
+     * In this case the parameter NUMPOINTS<3, and therefore the LIC should be false.
      */
     @Test
     public void LIC6NegativeTest3() {
-        // Setup of parameters to use
-        setup1();
-        // Change certain parameters to test valid case
-        decide.POINTS = new Coordinate[]{
-                new Coordinate(0,1),
-                new Coordinate(1,1),
-                new Coordinate(2,1),
-                new Coordinate(3,1),
-                new Coordinate(4,1)
-        };
-        decide.NUMPOINTS = decide.POINTS.length;
-        params.N_PTS = 2;
-        params.DIST = 2;
-
-        // Executes method
-        decide.LIC6();
-
-        // Asserts that it sets CMV[6] to true
-        Assert.assertFalse(decide.CMV[6]);
-    }
-
-    /**
-     * Tests the LIC6 method that it executes correctly and sets CMV[6] to false due to NUMPOINTS<3.
-     */
-    @Test
-    public void LIC6NegativeTest4() {
         // Setup of parameters to use
         setup1();
         // Change certain parameters to test valid case
@@ -544,8 +576,8 @@ public class DecideTest {
                 new Coordinate(3,1),
                 new Coordinate(4,1)
         };
-        decide.NUMPOINTS = decide.POINTS.length;
-        params.N_PTS = 2;
+        decide.NUMPOINTS = 2;
+        params.N_PTS = 3;
         params.DIST = 2;
 
         // Executes method
@@ -556,10 +588,13 @@ public class DecideTest {
     }
 
     /**
-     * Tests the LIC6 method that it executes correctly and sets CMV[6] to false due to DIST<0.
+     * Asserts that LIC6 sets CMV[6] to true in a positive test case.
+     * LIC6 is true if there exists N_PTS>2 consecutive points where one of the points is located
+     * further than or DIST>0 away from the line connecting the first and last of these points.
+     * In this case the parameter DIST<0, and therefore the LIC should be false.
      */
     @Test
-    public void LIC6NegativeTest5() {
+    public void LIC6NegativeTest4() {
         // Setup of parameters to use
         setup1();
         // Change certain parameters to test valid case
@@ -584,6 +619,11 @@ public class DecideTest {
 
     /**
      * Tests the LIC7 method that it executes correctly and sets CMV[7] to true.
+     * LIC is true if there exists at least one set of two data points separated by exactly K PTS consecutive
+     * intervening points that are a distance greater than the length, LENGTH1, apart. The condition
+     * is not met when NUMPOINTS < 3.
+     * In this test, the points (1,1) and (2,2) have a distance of root(2) apart, which is greater than 1,
+     * producing a positive test.
      */
     @Test
     public void LIC7PositiveTest() {
@@ -608,13 +648,17 @@ public class DecideTest {
 
     /**
      * Tests the LIC7 method that it executes correctly and sets CMV[7] to false,
-     * since the distance is smaller than PARAMETER.LENGTH1
+     * LIC is true if there exists at least one set of two data points separated by exactly K PTS consecutive
+     * intervening points that are a distance greater than the length, LENGTH1, apart. The condition
+     * is not met when NUMPOINTS < 3.
+     * In this test, the points (1,1) and (2,2) have a distance of root(2) apart, which is less than 2,
+     * producing a negative test.
      */
     @Test
     public void LIC7NegativeTest() {
         // Setup of parameters to use
         setup1();
-        // Change certain parameters to test invalid case
+        // Change certain parameters to test negative case
         decide.POINTS = new Coordinate[]{
                 new Coordinate(1,1),
                 new Coordinate(0,0),
@@ -633,12 +677,16 @@ public class DecideTest {
 
     /**
      * Tests the LIC7 method that it executes correctly and sets CMV[7] to false.
+     * LIC is true if there exists at least one set of two data points separated by exactly K PTS consecutive
+     * intervening points that are a distance greater than the length, LENGTH1, apart. The condition
+     * is not met when NUMPOINTS < 3.
+     * In this test, NUMPOINTS < 3, producing an invalid test.
      */
     @Test
     public void LIC7InvalidTest() {
         // Setup of parameters to use
         setup1();
-        // Change certain parameters to test valid case
+        // Change certain parameters to test invalid case
         decide.POINTS = new Coordinate[]{
                 new Coordinate(1,1),
                 new Coordinate(0,0)
@@ -656,6 +704,11 @@ public class DecideTest {
 
     /**
      * Tests the LIC8 method that it executes correctly and sets CMV[8] to false.
+     * There exists at least one set of three data points separated by exactly A PTS and B PTS
+     * consecutive intervening points, respectively, that cannot be contained within or on a circle of
+     * radius RADIUS1. The condition is not met when NUMPOINTS < 5, 1 < A PTS, 1 < B PTS,
+     * A PTS+B PTS < (NUMPOINTS-3)
+     * In this test, A PTS+B PTS < (NUMPOINTS-3), producing an invalid test.
      */
     @Test
     public void LIC8InvalidTest() {
@@ -684,6 +737,12 @@ public class DecideTest {
 
     /**
      * Tests the LIC8 method that it executes correctly and sets CMV[8] to true.
+     * There exists at least one set of three data points separated by exactly A PTS and B PTS
+     * consecutive intervening points, respectively, that cannot be contained within or on a circle of
+     * radius RADIUS1. The condition is not met when NUMPOINTS < 5, 1 < A PTS, 1 < B PTS,
+     * A PTS+B PTS < (NUMPOINTS-3)
+     * In this test, the points (1,5), (15,25), (50,75), are too far apart to be contained in a circle of radius 3,
+     * producing a positive test.
      */
     @Test
     public void LIC8ValidTest() {
@@ -713,6 +772,17 @@ public class DecideTest {
 
     /**
      * Tests a negative case for the LIC 9 function.
+     * LIC9 is true if there exists at least one set of three data points separated by exactly C PTS and D PTS
+     * consecutive intervening points, respectively, that form an angle such that:
+     * angle < (PI-EPSILON)
+     * or
+     * angle > (PI+EPSILON)
+     * The second point of the set of three points is always the vertex of the angle. If either the first
+     * point or the last point (or both) coincide with the vertex, the angle is undefined and the LIC
+     * is not satisfied by those three points. When NUMPOINTS < 5, the condition is not met.
+     *
+     * For this test, the points (1,1), (0,0), (1,0), form an angle of pi/4, which is not less than pi/8
+     * nor greater than 9pi/8, producing a negative result.
      */
     @Test
     public void LIC9NegativeTest1() {
@@ -732,6 +802,16 @@ public class DecideTest {
     
     /**
      * Tests a negative case for the LIC 9 function where one point is equal to a corresponding angle vertex.
+     * LIC9 is true if there exists at least one set of three data points separated by exactly C PTS and D PTS
+     * consecutive intervening points, respectively, that form an angle such that:
+     * angle < (PI-EPSILON)
+     * or
+     * angle > (PI+EPSILON)
+     * The second point of the set of three points is always the vertex of the angle. If either the first
+     * point or the last point (or both) coincide with the vertex, the angle is undefined and the LIC
+     * is not satisfied by those three points. When NUMPOINTS < 5, the condition is not met.
+     *
+     * For this test, the point (0,0) and the vertex (0,0) are at the same point, producing a false result.
      */
     @Test
     public void LIC9NegativeTest2() {
@@ -752,6 +832,17 @@ public class DecideTest {
 
     /**
      * Tests a positive case for the LIC 9 function.
+     * LIC9 is true if there exists at least one set of three data points separated by exactly C PTS and D PTS
+     * consecutive intervening points, respectively, that form an angle such that:
+     * angle < (PI-EPSILON)
+     * or
+     * angle > (PI+EPSILON)
+     * The second point of the set of three points is always the vertex of the angle. If either the first
+     * point or the last point (or both) coincide with the vertex, the angle is undefined and the LIC
+     * is not satisfied by those three points. When NUMPOINTS < 5, the condition is not met.
+     *
+     * For this test, the points (0,2), (0,3), (1,3), form an angle of pi/2, which is less than PI-EPSILON,
+     * which is pi/2+0.1 producing a positive result.
      */
     @Test
     public void LIC9PositiveTest1() {
@@ -1167,6 +1258,9 @@ public class DecideTest {
 
     /**
      * Tests the LIC13 method that it executes correctly and sets CMV[13] to true
+     *
+     * Coordinates (0,1),(1,0) and (0,-1) do not fit inside RADIUS1
+     * Coordinates (0,2),(2,0) and (-2,0) do fit inside RADIUS2
      */
     @Test
     public void LIC13PositiveTest() {
@@ -1281,8 +1375,12 @@ public class DecideTest {
     }
 
      /**
-     * Tests the LIC14 method that it executes correctly and sets CMV[14] to true.
-     */
+      * Tests the LIC14 method that it executes correctly and sets CMV[14] to true.
+      *
+      *
+      * Triangle (0,0), (2,0) and (0,2) has area 2, which is grater than AREA1 (1).
+      * Triangle (0,0), (2,0) and (0,2) has area 2, which is less than AREA2 (3).
+      */
     @Test
     public void LIC14PositiveTest() {
         // Setup of parameters to use
@@ -1299,7 +1397,7 @@ public class DecideTest {
         params.E_PTS = 1;
         params.F_PTS = 1;
         params.AREA1 = 1;
-        params.AREA2 = 4;
+        params.AREA2 = 3;
 
         // Executes method
         decide.LIC14();
@@ -1309,8 +1407,10 @@ public class DecideTest {
     }
 
     /**
-
      * Tests the LIC14 method that it executes correctly and sets CMV[14] to true.
+     *
+     * Triangle (0,0), (2,0) and (0,2) has area 2, which is grater than AREA1 (1).
+     * Triangle (0,0), (2,0) and (0,2) has area 2, which is less than AREA2 (4).
      */
     @Test
     public void LIC14PositiveTest2() {
@@ -1344,7 +1444,7 @@ public class DecideTest {
 
     /**
      * Tests the LIC14 method that it executes correctly and sets CMV[14] to false.
-     * Only one possible triangle and it has area = 2.
+     * Only one possible triangle and it has area = 2, which is grater than AREA2.
      */
     @Test
     public void LIC14NegativeTest() {
@@ -1489,8 +1589,11 @@ public class DecideTest {
     }
 
     /**
-      * Tests that the function calsulateDistance retruns the correct values
-      */
+     * Tests that the function calsulateDistance returns the correct values
+     *
+     * Between i (0,0) and j (0,2) the distance is 2
+     * Between i (0,0) and k (1,1) the distance is sqrt(2)
+     */
     @Test
     public void calculateDistanceTest(){
         setup1();
@@ -1505,9 +1608,11 @@ public class DecideTest {
         Assert.assertEquals(Math.sqrt(2.0), decide.calculateDistance(i,k), 0.01);
     }
 
-       /**
-      * Tests that the function checkcircle is correctly executed and returns correct.
-      */
+    /**
+     * Tests that the function checkcircle is correctly executed and returns correct.
+     *
+     * Coordinates (0,0),(2,0) and (1,1.1) will not fit inside or on a circle with radius 1
+     */
     @Test
     public void checkCircleTest(){
         setup1();
@@ -1520,7 +1625,11 @@ public class DecideTest {
 
     /**
      * Tests that help function calculateArea is correctly executed and returns correct.
-     */
+     * Calculates the area of the triangle that three points create and returns it.
+     * Third param of the assertEquals is a margin of error term and is there to account for to floating point errors.
+     *
+     * Area for coordinates (0,0), (2,0) and (0,2) is 2, which is true.
+     **/
     @Test
     public void calculateAreaTest() {
         setup1();
@@ -1535,6 +1644,14 @@ public class DecideTest {
 
     /**
      * Tests that help function threePointsAreaComparison executes correctly and returns true
+     * Calculates the area of the triangle that three consecutive points make up and returns true
+     * if it is greater than the area given to it as the first parameter if it should be greater.
+     * Also tests if area is less.
+     *
+     * Area is 2 for coordinates.
+     *
+     * True test: Should return true as 2 >= 1 and 2 <= 2
+     * False test: Should return false as 2 >= 3 and 2 <= 1 is not true
      */
     @Test
     public void threePointsAreaComparisonTest() {
@@ -1559,6 +1676,8 @@ public class DecideTest {
 
     /**
      * Tests the Coordinate angle checking helper function.
+     * Should check the angle formed by three points and return it.
+     * Third param of assertEquals is an error marginal to account for floating point errors.
      */
     @Test
     public void checkAngleTest() {
@@ -1572,6 +1691,10 @@ public class DecideTest {
 
     /**
      * Tests the Coordinate subtraction helper function.
+     * Should subtract one coordinate from another and return the resulting coordinate.
+     * Third param of assertEquals is an error marginal to account for floating point errors.
+     *
+     * res is the answer, and will be equal to c3
      */
     @Test
     public void coordSubtractTest() {
