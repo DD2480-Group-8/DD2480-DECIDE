@@ -230,7 +230,7 @@ public class DecideTest {
     /**
      * Tests a negative case for the LIC2 function, where there does not exist at least one set of three consecutive
      * data points which form an angle such that:
-     * angle < (PI-EPSILON)
+     * angle < (PI-EPSILON), 0 <= EPSILON < PI
      * The three test points form a maximum angle of pi/2, which exceeds pi/8, therefore throwing a negative case
     */
     @Test
@@ -270,7 +270,7 @@ public class DecideTest {
     }
 
     /**
-     * Tests the LIC3 method that it executes correctly and sets CMV[3] to true.
+     * Asserts that the LIC3 method executes correctly and sets CMV[3] to true.
      *
      * The area between points (0,0), (2,0) and (0,2) will be 2 area units, which is
      * greater than 1.
@@ -290,7 +290,7 @@ public class DecideTest {
     }
 
     /**
-     * Tests the LIC3 method that it executes correctly and sets CMV[3] to false,
+     * Asserts that the LIC3 method executes correctly and sets CMV[3] to false,
      * due to the area being too small.
      *
      * The area between points (0,0), (1,0) and (0,1) will be 0.5 area units, which is
@@ -868,7 +868,12 @@ public class DecideTest {
 
     
     /**
-     * Tests the LIC10 method that it executes correctly and sets CMV[10] to true.
+     * Asserts that the LIC10 method executes correctly and sets CMV[10] to true. Both E_PTS 
+     * and F_PTS are set to 1, meaning the first, third, and fith points are used to calculate
+     * the area. 
+     *
+     * The area between points (0,0), (2,0) and (0,2) will be 2 area units, which is
+     * greater than AREA1=1.
      */
     @Test
     public void LIC10PositiveTest() {
@@ -895,7 +900,12 @@ public class DecideTest {
     }
 
     /**
-     * Tests the LIC10 method that it executes correctly and sets CMV[10] to false.
+     * Asserts that the LIC10 method executes correctly and sets CMV[10] to false. Both E_PTS 
+     * and F_PTS are set to 1, meaning the first, third, and fith points are used to calculate
+     * the area. 
+     *
+     * The area between points (0,0), (2,0) and (1,1) will be 1 area units, which is
+     * not greater than AREA1=1.
      */
     @Test
     public void LIC10NegativeTest() {
@@ -922,8 +932,8 @@ public class DecideTest {
     }
 
     /**
-     * Tests the LIC10 method that it executes correctly and sets CMV[10] to false,
-     * due to too few coordinates.
+     * Asserts that the LIC10 method executes correctly and sets CMV[10] to false,
+     * due to recieving less than five points.
      */
     @Test
     public void LIC10InvalidTest() {
@@ -949,7 +959,7 @@ public class DecideTest {
     }
 
     /**
-     * Tests the LIC10 method that it executes correctly and sets CMV[10] to false,
+     * Asserts that the LIC10 method executes correctly and sets CMV[10] to false,
      * due to PARAMETERS.E_PTS being < 1
      */
     @Test
@@ -977,7 +987,7 @@ public class DecideTest {
     }
 
     /**
-     * Tests the LIC10 method that it executes correctly and sets CMV[10] to false,
+     * Asserts that the LIC10 method executes correctly and sets CMV[10] to false,
      * due to PARAMETERS.E_PTS + PARAMETERS.F_PTS > NUMPOINTS−3
      */
     @Test
@@ -1005,7 +1015,10 @@ public class DecideTest {
     }
 
     /**
-     * Tests the LIC11 method that it executes correctly and sets CMV[11] to true
+     * Asserts that the LIC11 method executes correctly and sets CMV[11] to true.
+     * LIC11 is true if there exist at least one set of two data points, (X[i],Y[i]) and (X[j],Y[j]), such
+     * that X[j] - X[i] < 0. (where i = j-G_PTS-1), 0 < G_PTS < NUMPOINTS−2.
+     * For this test, X[j] - X[i] = -1 - 0 = -1, and CMV[11] is set to true. 
      */
     @Test
     public void LIC11PositiveTest() {
@@ -1027,8 +1040,11 @@ public class DecideTest {
         Assert.assertTrue(decide.CMV[11]);
     }
 
-    /**
-     * Tests the LIC11 method that it executes correctly and sets CMV[11] to true
+     /**
+     * Asserts that the LIC11 method executes correctly and sets CMV[11] to true.
+     * LIC11 is true if there exist at least one set of two data points, (X[i],Y[i]) and (X[j],Y[j]), such
+     * that X[j] - X[i] < 0. (where i = j-G_PTS-1), 0 < G_PTS < NUMPOINTS−2.
+     * For this test, X[j] - X[i] = -1 - 2 = -3, and CMV[11] is set to true. 
      */
     @Test
     public void LIC11PositiveTest2() {
@@ -1060,8 +1076,11 @@ public class DecideTest {
         Assert.assertTrue(decide.CMV[11]);
     }
 
-    /**
-     * Tests the LIC11 method that it executes correctly and sets CMV[11] to false
+     /**
+     * Asserts that the LIC11 method executes correctly and sets CMV[11] to true.
+     * LIC11 is false if there does not exist at least one set of two data points, (X[i],Y[i]) and (X[j],Y[j]), such
+     * that X[j] - X[i] < 0. (where i = j-G_PTS-1), 0 < G_PTS < NUMPOINTS−2.
+     * For this test, X[j] - X[i] = 1 - 0 = 1, and CMV[11] is set to false. 
      */
     @Test
     public void LIC11NegativeTest() {
@@ -1084,8 +1103,10 @@ public class DecideTest {
     }
 
     /**
-     * Tests the LIC11 method that it executes correctly and sets CMV[11] to false,
-     * due to PARAMETER.G_PTS being less than 1.
+     * Asserts that the LIC11 method executes correctly and sets CMV[11] to true.
+     * LIC11 is false if there does not exist at least one set of two data points, (X[i],Y[i]) and (X[j],Y[j]), such
+     * that X[j] - X[i] < 0. (where i = j-G_PTS-1), 0 < G_PTS < NUMPOINTS−2.
+     * For this test, G_PTS < 1, and CMV[11] is set to false. 
      */
     @Test
     public void LIC11InvalidTest() {
@@ -1108,9 +1129,12 @@ public class DecideTest {
     }
 
     /**
-     * Tests the LIC11 method that it executes correctly and sets CMV[11] to false,
-     * due to PARAMETER.G_PTS being larger than NUMPOINTS-2.
+     * Asserts that the LIC11 method executes correctly and sets CMV[11] to true.
+     * LIC11 is false if there does not exist at least one set of two data points, (X[i],Y[i]) and (X[j],Y[j]), such
+     * that X[j] - X[i] < 0. (where i = j-G_PTS-1), 0 < G_PTS < NUMPOINTS−2.
+     * For this test, G_PTS > NUMPOINTS−2, and CMV[11] is set to false. 
      */
+    @Test
     @Test
     public void LIC11InvalidTest2() {
         // Setup of parameters to use
@@ -1132,8 +1156,10 @@ public class DecideTest {
     }
 
     /**
-     * Tests the LIC11 method that it executes correctly and sets CMV[11] to false,
-     * due to NUMPOINTS being < 3.
+     * Asserts that the LIC11 method executes correctly and sets CMV[11] to true.
+     * LIC11 is false if there does not exist at least one set of two data points, (X[i],Y[i]) and (X[j],Y[j]), such
+     * that X[j] - X[i] < 0. (where i = j-G_PTS-1), 0 < G_PTS < NUMPOINTS−2.
+     * For this test, NUMPOINTS < 3, and CMV[11] is set to false. 
      */
     @Test
     public void LIC11InvalidTest3() {
@@ -1157,8 +1183,9 @@ public class DecideTest {
 
     /**
      * Asserts that a true case for LIC12 sets CMV[12] to true.
-     * LIC12 is true if there exists at least one set of two data points separated by K_PTS, which are a distance greater than LENGTH1 apart
-     * and one set of two data points K_PTS apart that is a distance less than LENGTH2 apart.
+     * LIC12 is true if there exists at least one set of two data points separated by K_PTS, 0 < K_PTS <= (NUMPOINTS−2), which are a distance greater than LENGTH1 >= 0 apart
+     * and one set of two data points K_PTS apart that is a distance less than LENGTH2 >= 0 apart.
+     * For this test, LENGTH1 = 2 and LENGTH2 = 5. The points (0,0) and (3,0) are 3 units apart, and CMV[12] is set to true. 
      */
     @Test
     public void LIC12TestTrue() {
@@ -1184,10 +1211,11 @@ public class DecideTest {
     }
 
     /**
-     * Asserts that a false case for LIC12 sets CMV[12] to false.
-     * LIC12 is true if there exists at least one set of two data points separated by K_PTS, which are a distance greater than LENGTH1 apart
-     * and one set of two data points K_PTS apart that is a distance less than LENGTH2 apart.
-     */
+    * Asserts that a true case for LIC12 sets CMV[12] to true.
+    * LIC12 is true if there exists at least one set of two data points separated by K_PTS, 0 < K_PTS <= (NUMPOINTS−2), which are a distance greater than LENGTH1 >= 0 apart
+    * and one set of two data points K_PTS apart that is a distance less than LENGTH2 >= 0 apart.
+    * For this test, LENGTH1 = 7 and LENGTH2 = 5. No points  are >7 units apart, and CMV[12] is set to false. 
+    */
     @Test
     public void LIC12TestFalse() {
         // Setup of parameters to use
@@ -1212,10 +1240,11 @@ public class DecideTest {
     }
 
     /**
-     * Asserts that a case with invalid inputs for LIC12 sets CMV[12] to false.
-     * LIC12 is true if there exists at least one set of two data points separated by K_PTS, which are a distance greater than LENGTH1 apart
-     * and one set of two data points K_PTS apart that is a distance less than LENGTH2 apart.
-     */
+    * Asserts that a true case for LIC12 sets CMV[12] to true.
+    * LIC12 is true if there exists at least one set of two data points separated by K_PTS, 0 < K_PTS <= (NUMPOINTS−2), which are a distance greater than LENGTH1 >= 0 apart
+    * and one set of two data points K_PTS apart that is a distance less than LENGTH2 >= 0 apart.
+    * For this test, K_PTS < 0, and CMV[12] is set to false. 
+    */
     @Test
     public void LIC12InvalidInputs() {
         // Setup of parameters to use
